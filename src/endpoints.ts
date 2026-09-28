@@ -8,7 +8,7 @@ export const router = express.Router(); // 1. Create the mini-app
  * POST /api/create-payment-intent
  * Core endpoint for processing card payments
  */
-router.post('/create-payment-intent', async (req: Request, res: Response): Promise<void> => {
+router.post('/create-payment-intent', async (req: Request, res: Response): Promise<void> => { 
   try {
     const { amount, currency } = req.body;
 
@@ -36,4 +36,6 @@ router.post('/create-payment-intent', async (req: Request, res: Response): Promi
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 });
+
+
 

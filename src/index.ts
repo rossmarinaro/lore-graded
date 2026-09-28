@@ -2,10 +2,10 @@ import { express, app, PORT } from './config/express'
 import { Request, Response } from 'express'
 import { router } from './endpoints';
 
-app.use('/api', router);
-
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+app.use('/api', router);
 
 // Sample Route with typed request and response parameters
 app.get('/test', (_req: Request, res: Response) => {
