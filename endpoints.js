@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
 const stripe_js_1 = require("./config/stripe.js");
-const express_1 = require("./config/express");
-express_1.app.get('/', (_req, res) => {
-    res.json({ message: 'Express + TypeScript + Stripe backend running.' });
-});
-express_1.app.post('/api/create-payment-intent', async (req, res) => {
+const express = require('express');
+exports.router = express.Router();
+exports.router.post('/create-payment-intent', async (req, res) => {
     try {
         const { amount, currency } = req.body;
         if (!amount || !currency) {

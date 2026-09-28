@@ -1,2 +1,0 @@
-git pull --rebase origin release && npm run build && git add . && git commit -m "new deploy" && git subtree push --prefix dist origin release
-

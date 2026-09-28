@@ -1,12 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("./config/express");
-const express_2 = __importDefault(require("express"));
-express_1.app.use(express_2.default.json());
-express_1.app.get('/', (_req, res) => {
+const endpoints_1 = require("./endpoints");
+express_1.app.use(express_1.express.json());
+express_1.app.use('/api', endpoints_1.router);
+express_1.app.get('/test', (_req, res) => {
     res.json({ message: 'Hello from Express with TypeScript!' });
 });
 express_1.app.listen(express_1.PORT, () => {
