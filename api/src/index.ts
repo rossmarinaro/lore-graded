@@ -5,7 +5,7 @@ import express, { Request, Response } from 'express'
 app.use(express.json());
 
 // Sample Route with typed request and response parameters
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'Hello from Express with TypeScript!' });
 });
 

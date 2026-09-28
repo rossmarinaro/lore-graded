@@ -3,7 +3,7 @@ import { stripe } from './config/stripe.js'; // Ensure correct path extension fo
 import { app } from './config/express'
 
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'Express + TypeScript + Stripe backend running.' });
 });
 
