@@ -1,1 +1,1 @@
-git add . && git rm -r --cached dist && git commit -am 'update' && git push -f origin master
+rm -rf dist && git add . && git commit -am 'update' && git push -f origin master

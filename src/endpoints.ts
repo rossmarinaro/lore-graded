@@ -1,16 +1,14 @@
 import { Request, Response } from 'express';
 import { stripe } from './config/stripe.js'; // Ensure correct path extension for NodeNext
-import { app } from './config/express'
+const express = require('express');
+export const router = express.Router(); // 1. Create the mini-app
 
-app.get('/', (_req: Request, res: Response) => {
-  res.json({ message: 'Express + TypeScript + Stripe backend running.' });
-});
 
 /**
  * POST /api/create-payment-intent
  * Core endpoint for processing card payments
  */
-app.post('/api/create-payment-intent', async (req: Request, res: Response): Promise<void> => {
+router.post('/create-payment-intent', async (req: Request, res: Response): Promise<void> => {
   try {
     const { amount, currency } = req.body;
 
@@ -38,3 +36,4 @@ app.post('/api/create-payment-intent', async (req: Request, res: Response): Prom
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 });
+

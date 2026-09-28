@@ -3,4 +3,4 @@ import express from 'express';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-export { app, PORT };
+export { express, app, PORT };
