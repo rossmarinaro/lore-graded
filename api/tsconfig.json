@@ -7,7 +7,7 @@
 
     /* Output Layout */
     "rootDir": "./src",                               /* Where your source files live */
-    "outDir": "../release/dist",                               /* Where the compiled JS goes */
+    "outDir": "../dist",                               /* Where the compiled JS goes */
     "sourceMap": true,                                /* Maps errors in JS back to TS source code */
     "removeComments": true,                           /* Strip comments for smaller bundle output */
 
@@ -24,7 +24,7 @@
     "skipLibCheck": true                              /* Skip type checking of declaration files (.d.ts) */
   },
   "include": ["src/**/*"],                            /* Files compiled by tsc */
-  "exclude": ["node_modules", "../release/dist"],                /* Files completely ignored */
+  "exclude": ["node_modules", "../dist"],                /* Files completely ignored */
   "noUnusedLocals": false,
   "noUnusedParameters": false
 }
