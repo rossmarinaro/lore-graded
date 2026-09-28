@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const stripe_js_1 = require("./config/stripe.js");
-const express_1 = require("./config/express.js");
+const express_1 = require("./config/express");
 express_1.app.get('/', (_req, res) => {
     res.json({ message: 'Express + TypeScript + Stripe backend running.' });
 });
