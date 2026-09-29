@@ -1,0 +1,1011 @@
+[
+  {
+    "path": "account/account.js",
+    "bytes": 16147,
+    "sha256": "95a4bbdab23a6f01cebf411a622dc17747b5a2eed40583e6fe39d143c60f8ccc",
+    "apiPaths": [
+      "/api/process-one"
+    ]
+  },
+  {
+    "path": "account/barcodes.js",
+    "bytes": 463,
+    "sha256": "d909f8a2bdbd7e72c335cb689f936c91ad143a7a8542e2a6a5f6cfccbd110c89",
+    "apiPaths": []
+  },
+  {
+    "path": "account/beta.js",
+    "bytes": 7132,
+    "sha256": "d5a4a28a7e709c956ab106a523a1f350da863c7e852dde8c5121ee2597198a32",
+    "apiPaths": [
+      "/api/beta"
+    ]
+  },
+  {
+    "path": "account/carrier-labels.js",
+    "bytes": 1138,
+    "sha256": "ef4cc33066809d7ee967affb5c84754b37e38112f0f70f08769a15541b26ab1d",
+    "apiPaths": [
+      "/api/fulfillment/admin/orders/"
+    ]
+  },
+  {
+    "path": "account/catalog-filters.js",
+    "bytes": 985,
+    "sha256": "572f8b22866da2ffd33a4af5de1d2e5dc7dea0523cceb253b2754a05fdb0234b",
+    "apiPaths": []
+  },
+  {
+    "path": "account/collector-profile.js",
+    "bytes": 532,
+    "sha256": "68cbf1f845f8b7134e21136e0f5ba02bb2ac8d90a93a61b16aeff40ee9a11c89",
+    "apiPaths": []
+  },
+  {
+    "path": "account/founder-activation.js",
+    "bytes": 3165,
+    "sha256": "b2e746532ca15c1030916a744dc7eb04c0b6893392eb52e4a13967a396bbb85e",
+    "apiPaths": [
+      "/api/lounge-chat/founders/code",
+      "/api/lounge-chat/founders/unlock",
+      "/api/process-two/claim-invitation"
+    ]
+  },
+  {
+    "path": "account/founder-recovery.js",
+    "bytes": 4278,
+    "sha256": "6cb212db0e8e06930fcb112e9318fb36923ff2c8728d6b7036cf5748dee0528b",
+    "apiPaths": [
+      "/api/lounge-chat/founders/code",
+      "/api/lounge-chat/founders/unlock",
+      "/api/process-two/recover-account"
+    ]
+  },
+  {
+    "path": "account/founder-review.js",
+    "bytes": 5079,
+    "sha256": "5ea2f99561fe5733a7ccdc3e1a808d6509431b355c7dc0432b0bbaf598934e1e",
+    "apiPaths": [
+      "/api/process-two/admin"
+    ]
+  },
+  {
+    "path": "account/founders.js",
+    "bytes": 4859,
+    "sha256": "815864f1a0afb3b97aa22bb7c58cfd79851cac70060611edccf10e961455ee52",
+    "apiPaths": [
+      "/api/process-two"
+    ]
+  },
+  {
+    "path": "account/order-review.js",
+    "bytes": 6061,
+    "sha256": "744fa075d5082257e8988eba2c9eff96c6ce9c14955c7ab3b65bd99718ab0c48",
+    "apiPaths": [
+      "/api/process-three"
+    ]
+  },
+  {
+    "path": "account/orders.js",
+    "bytes": 11801,
+    "sha256": "da5ef2850cab651f7dffea57f8f8077ad1bbf19281bda0c39651edabd7b00893",
+    "apiPaths": [
+      "/api/process-one",
+      "/api/process-three"
+    ]
+  },
+  {
+    "path": "account/receiving.js",
+    "bytes": 6152,
+    "sha256": "90ea55dffc0968b5b1a75c9666fb6687bb43450c6decb7c3f895248b8d713e4f",
+    "apiPaths": [
+      "/api/fulfillment"
+    ]
+  },
+  {
+    "path": "account/shipping.js",
+    "bytes": 4055,
+    "sha256": "7fda24d8e45c7fb8475a4c6cf0a22ed1863c76739de32d2ef33e2de392ee9ba5",
+    "apiPaths": [
+      "/api/fulfillment/orders/"
+    ]
+  },
+  {
+    "path": "app/card-showcase/scene.js",
+    "bytes": 9776,
+    "sha256": "b787fd31e2f0bec21facefce2bd683456535fd109398e2b6e46abaf4de02900e",
+    "apiPaths": []
+  },
+  {
+    "path": "app/catalog-on-demand.js",
+    "bytes": 470,
+    "sha256": "43b256e633eb5f669d32f986d8cd92a7b4efde97ce7a6922afdec68a8869d39d",
+    "apiPaths": []
+  },
+  {
+    "path": "app/customer-care.js",
+    "bytes": 982,
+    "sha256": "7ea895806519852b6d3d56c96f632a99057ececaa6855106b2b39cc201892899",
+    "apiPaths": []
+  },
+  {
+    "path": "app/grading-transparency.js",
+    "bytes": 3700,
+    "sha256": "ebfd3394ab97a966a79b643fa52929c2275a31360986bb00c87031d49da08a0b",
+    "apiPaths": []
+  },
+  {
+    "path": "app/guarantee.js",
+    "bytes": 446,
+    "sha256": "93de7aa44c098284c0a99a0aad24dda24c2ccd97f563ca0fa6510b2fad0b9c55",
+    "apiPaths": []
+  },
+  {
+    "path": "app/label-inspector/app.js",
+    "bytes": 3403,
+    "sha256": "98a2b00e3cba60a89562da6157be1a93656f2087658424f7635c7cff91448752",
+    "apiPaths": []
+  },
+  {
+    "path": "app/order-help.js",
+    "bytes": 6990,
+    "sha256": "8466993de5f1239cf3448d251207f4075f5c6b3e8f39e8ae797b233e8e418d63",
+    "apiPaths": []
+  },
+  {
+    "path": "app/queue-activity-ui.js",
+    "bytes": 2292,
+    "sha256": "9d0787f1c5cc880d40d9db1be56ee15bb8f16330fc17eafb508036e430f44e5a",
+    "apiPaths": []
+  },
+  {
+    "path": "app/queue-activity.js",
+    "bytes": 1593,
+    "sha256": "2e79de654f3a9af08b95f120a24b043ebea30879ed9cf56075a2cd1d53846561",
+    "apiPaths": []
+  },
+  {
+    "path": "app/queue-demo.js",
+    "bytes": 1581,
+    "sha256": "e4177d79ad1cb2e7dc9dcc9d80b4bd514869bfb377ec76ebfe6af3e0519aab8c",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-card-experience.js",
+    "bytes": 28730,
+    "sha256": "47d95e9b05a276d41be0b4a886ab2db7a62638d84d4d9ed57ee9e3d3ab86c234",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-card-showcase.js",
+    "bytes": 444,
+    "sha256": "70d4af1ad458101ea0ba5c63235e21a7e0039d4a76c85eca1485ffca52596fb9",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-card-stands.js",
+    "bytes": 2692,
+    "sha256": "b318d8f476537aa38f0e08431313baab268322be39b69db5210548e281b94a6d",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-image-inspector.js",
+    "bytes": 9839,
+    "sha256": "38ee25a2122f016e48ac9d0e26de9110ed3c3add444a1309123ddeda38d13f56",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-label-features.js",
+    "bytes": 1277,
+    "sha256": "04b8de4480936de3565fe4aa3bdef06178f66586071e01f36cb8a7651653f88e",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-launch-list.js",
+    "bytes": 169,
+    "sha256": "61b368f4a5de86ae47d27d501e8faf65e54b799bfec41b492f7a56b6f6fd2564",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-lounge-reveal.js",
+    "bytes": 1668,
+    "sha256": "cb741a75233aca59f2c404ca402c1289eb2f25368f56862bdc4e326b0749b493",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-magnifier.js",
+    "bytes": 3067,
+    "sha256": "3670bbcc6ed2b84751a209d2ef72d771886fc91efb7586d39ac722868b2fc469",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-preentry.js",
+    "bytes": 628,
+    "sha256": "7505b1fa8b49ed81f3c41ffcad99ce499d36410b1a4302988fbe296c80c15284",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-rotating-card.js",
+    "bytes": 47,
+    "sha256": "fd0264ee3695b280baae8a5cf0a4a187c74ce76d8aa31c36c7dba4daf0870965",
+    "apiPaths": []
+  },
+  {
+    "path": "app/sig-service-levels.js",
+    "bytes": 384,
+    "sha256": "4f4c43e637412621fe52214c60714e3d564b252497dca1509ce5b9139b544edf",
+    "apiPaths": []
+  },
+  {
+    "path": "app/submission-review.js",
+    "bytes": 5794,
+    "sha256": "535c76920bfdeecd840ee82e145e08a6d8752a68003fccaa0fc400f56d97a798",
+    "apiPaths": []
+  },
+  {
+    "path": "app/tracking.js",
+    "bytes": 3017,
+    "sha256": "904c5e5f4ca0568f09df6180df94d8b28955392c54fa2b0be15b9e295d341817",
+    "apiPaths": []
+  },
+  {
+    "path": "app/verification.js",
+    "bytes": 2281,
+    "sha256": "0ac9c902a1256e88da79f90fa3345e5e2655d7de724ebfa10e954dfc02a50dd1",
+    "apiPaths": []
+  },
+  {
+    "path": "card-showcase/scene.js",
+    "bytes": 9776,
+    "sha256": "b787fd31e2f0bec21facefce2bd683456535fd109398e2b6e46abaf4de02900e",
+    "apiPaths": []
+  },
+  {
+    "path": "catalog-review.js",
+    "bytes": 2520,
+    "sha256": "427f8054fc4412da39ea9804825a7df8aef4cfcbdb28265346b94c8dcd49b13e",
+    "apiPaths": []
+  },
+  {
+    "path": "collector-routes.js",
+    "bytes": 631,
+    "sha256": "2c01d7ca9546db01439be3d12a23b5d2a9984e38b062a4eea5b893d19185ec8e",
+    "apiPaths": []
+  },
+  {
+    "path": "founders/prelaunch.js",
+    "bytes": 7997,
+    "sha256": "3899618de93a4ed3b46de136a34c9066df2aba32c80f8b948a31ece4472bc670",
+    "apiPaths": []
+  },
+  {
+    "path": "founders-application.js",
+    "bytes": 4053,
+    "sha256": "9a7940a8b02332614307f0320cba67f5f17759efd2f52b6f5717852866e49e9f",
+    "apiPaths": []
+  },
+  {
+    "path": "founders-experience.js",
+    "bytes": 1858,
+    "sha256": "4fa4825cd46ff72a9ca5be309e7f4eae1a412e46d85b0d20ccf02340be94c41f",
+    "apiPaths": []
+  },
+  {
+    "path": "founders-pre-release.js",
+    "bytes": 16254,
+    "sha256": "ef806188622f513b120aab0d48d3adcc3eeb51be8f439e5532aea7db15a2e3ac",
+    "apiPaths": []
+  },
+  {
+    "path": "games/collection-nav.js",
+    "bytes": 1614,
+    "sha256": "36c411b6f2f37ede0adc0095cdb3dfca49b154cb3bc617261592fccd048c6976",
+    "apiPaths": []
+  },
+  {
+    "path": "games/ember-vault/audio.js",
+    "bytes": 4628,
+    "sha256": "f860195a99cd77af300a13d0731296002f4fa72687fae462c5743bb00aea6fb6",
+    "apiPaths": []
+  },
+  {
+    "path": "games/ember-vault/game.js",
+    "bytes": 8279,
+    "sha256": "fbd1daf33fda792cf8a023a9cbc37713d989514a6c24f4ee0132761e323eaa4c",
+    "apiPaths": []
+  },
+  {
+    "path": "games/enchanted-archive/audio.js",
+    "bytes": 4620,
+    "sha256": "9196675c1bb714edbd6aec3c550c4956f22374a20bccdfb560c1fc8f28127eeb",
+    "apiPaths": []
+  },
+  {
+    "path": "games/enchanted-archive/game.js",
+    "bytes": 8093,
+    "sha256": "f884123f202240da8bcfbbac50bf354a6506eee097ad0ae398fcceec104ccfd8",
+    "apiPaths": []
+  },
+  {
+    "path": "games/hero-protocol/audio.js",
+    "bytes": 4532,
+    "sha256": "fae9de9dc7954866967b2b58be7840af1ce81b982478064019cf34a94a1a2421",
+    "apiPaths": []
+  },
+  {
+    "path": "games/hero-protocol/game.js",
+    "bytes": 8478,
+    "sha256": "755e07763016e556dde9332552ed9bdf70204d63c7420257b8cd80b15273c9f2",
+    "apiPaths": []
+  },
+  {
+    "path": "games/holocron-overload/arcade-engine.js",
+    "bytes": 1055,
+    "sha256": "5cc11dea547ec30782ae1fd7d83fd4577f7b42a070062c5ba122261224c024ca",
+    "apiPaths": []
+  },
+  {
+    "path": "games/holocron-overload/audio.js",
+    "bytes": 4906,
+    "sha256": "6d48d804a6f5935d06f3a8784aa42ce3d8c4ce3ff69e016d0c237b07aea5b763",
+    "apiPaths": []
+  },
+  {
+    "path": "games/holocron-overload/game.js",
+    "bytes": 17602,
+    "sha256": "91fc635366bf1a2b12b2c32af64118ca5cde0d3bbcaba02812bb7358f5c8efaf",
+    "apiPaths": [
+      "/api/games"
+    ]
+  },
+  {
+    "path": "games/holocron-overload/grading-engine.js",
+    "bytes": 981,
+    "sha256": "d74ab25559f8816a49463083d77ab4b40ea6871a83b3dfca9507164ac33e7d35",
+    "apiPaths": []
+  },
+  {
+    "path": "games/pharaohs-vault/audio.js",
+    "bytes": 4536,
+    "sha256": "ff0a10acf607217bb9528af13d7934a86da4de5a031db63d10cd96d4f2394ae1",
+    "apiPaths": []
+  },
+  {
+    "path": "games/pharaohs-vault/game.js",
+    "bytes": 8396,
+    "sha256": "56810b662d0d17a355392b4ef15e84127c217cebf9b2f15487fd8d5e53e01568",
+    "apiPaths": []
+  },
+  {
+    "path": "games/phone-controls.js",
+    "bytes": 1409,
+    "sha256": "09b7715343ae1334d176fb1a0dedf8427dd2756a1600154da0e785a32fd20d2a",
+    "apiPaths": []
+  },
+  {
+    "path": "games/realm-challenges/config.js",
+    "bytes": 923,
+    "sha256": "6fde9b5c7778e534e1aa590db2e4c66f3735c03aaa05e3caadce7a4c5de2ef9d",
+    "apiPaths": []
+  },
+  {
+    "path": "games/realm-challenges/game.js",
+    "bytes": 5799,
+    "sha256": "5688134c5b7521aa319ceeffb4439904c3914c86666b67af8b97d5843e5b1846",
+    "apiPaths": []
+  },
+  {
+    "path": "games/reveal-the-relic/game.js",
+    "bytes": 3987,
+    "sha256": "98c4b78322c24c1c43209fa1e0473a95f16edc6925258a18a74fe9625d488556",
+    "apiPaths": []
+  },
+  {
+    "path": "games/rift-resonance/game.js",
+    "bytes": 2431,
+    "sha256": "cc3bcb08f0fcb10d400938caef4ac6abddcc951512aa57fcf06ffd6f30d437e8",
+    "apiPaths": []
+  },
+  {
+    "path": "games/rift-trials/audio.js",
+    "bytes": 4535,
+    "sha256": "d7552cf6168b28c347bde634b16d34a43d0c687a72b93d6351b046c8b9cc10d9",
+    "apiPaths": []
+  },
+  {
+    "path": "games/rift-trials/game.js",
+    "bytes": 8350,
+    "sha256": "bf61e2d39607b66420139b3f647bcdeef45d8e7c9454caab8e414213dd4dbc04",
+    "apiPaths": []
+  },
+  {
+    "path": "games/rune-vault/audio.js",
+    "bytes": 4529,
+    "sha256": "1322a9c03f3f1cb21ed51ca4f48698c12190301cd22cc65ba48063537e0a047f",
+    "apiPaths": []
+  },
+  {
+    "path": "games/rune-vault/game.js",
+    "bytes": 8253,
+    "sha256": "1edff5f368181b875a602ba1e7c92347e71c475892ca7968d940fb4fcb6f954c",
+    "apiPaths": []
+  },
+  {
+    "path": "games/treasure-vault/audio.js",
+    "bytes": 4635,
+    "sha256": "072d7b6a8532a0cbe857dbe69aa991d97d0f889946ea3f876daf91a4350a6197",
+    "apiPaths": []
+  },
+  {
+    "path": "games/treasure-vault/game.js",
+    "bytes": 8344,
+    "sha256": "f035fc6e58f383fe8cebe28a922880a0a67bef3edc43b173d09da5d9f9e4f10c",
+    "apiPaths": []
+  },
+  {
+    "path": "gold-club/apply/access.js",
+    "bytes": 119,
+    "sha256": "d2e8fdefa87ebc6c9d7b0a2ee7e08c4e04836327413f9c7a23766a6ce566584f",
+    "apiPaths": []
+  },
+  {
+    "path": "gold-club/chat/lounge-doors.js",
+    "bytes": 1075,
+    "sha256": "b4b76e5733a5db3aea371967c2f3edf0e0c80b826b9383ed914356f2205d801a",
+    "apiPaths": []
+  },
+  {
+    "path": "gold-club/entrance.js",
+    "bytes": 121,
+    "sha256": "118112e8b393a3ca975e448a1f2e22eb68700d5e683354f5cdbb67a00bb88c6b",
+    "apiPaths": []
+  },
+  {
+    "path": "gold-club/founders-door.js",
+    "bytes": 645,
+    "sha256": "e0d11c6911c3493bc705afd7bd50bb6173cecf6159471bae0cf3b85784d0b1ae",
+    "apiPaths": []
+  },
+  {
+    "path": "gold-club/members/entry.js",
+    "bytes": 1800,
+    "sha256": "93538a7fdabe9f319f6147c21e858c7281d9689682dfc6ebaff13ebd2f0e9270",
+    "apiPaths": [
+      "/api/lounge-chat/founders"
+    ]
+  },
+  {
+    "path": "gold-club/membership-panel.js",
+    "bytes": 1002,
+    "sha256": "fdb78d5d0a8240740d4f25e3efe9be0654529d051b890cb31ab100296bcedeff",
+    "apiPaths": []
+  },
+  {
+    "path": "gold-club/presenter-entry.js",
+    "bytes": 552,
+    "sha256": "96a02179cd62a67982df7c841d2a37404aac1852205d82f2a29f872a58af7c58",
+    "apiPaths": []
+  },
+  {
+    "path": "gold-founders-prelaunch.js",
+    "bytes": 2888,
+    "sha256": "f3e8dbe7b1870289fc14029dfb8aafab32de22accdfbf64d89769853a783a38d",
+    "apiPaths": []
+  },
+  {
+    "path": "grading-queue.js",
+    "bytes": 1797,
+    "sha256": "781a07136f7bdf08ea7a3fce01097241430039f7488ec2b3aec15b8413bd813d",
+    "apiPaths": [
+      "/api/process-three/queue-status"
+    ]
+  },
+  {
+    "path": "hall-of-legends/chat-door.js",
+    "bytes": 2524,
+    "sha256": "6beeba9b1248ce332b702c038414519eeb969f47f7bc4a9dcad7c7d8d2b2e1bb",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/dashboard.js",
+    "bytes": 939,
+    "sha256": "d31036035e109d98824ebfec82269bf10056a676f3485c6d1de2e88352c19097",
+    "apiPaths": [
+      "/api/process-two/realm-status"
+    ]
+  },
+  {
+    "path": "hall-of-legends/disney/doors.js",
+    "bytes": 4336,
+    "sha256": "1619f5d6f3c4140fbd9fe81bbb3ed333e434bc4a648912bd6d38fff66c4928f7",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/explore.js",
+    "bytes": 1418,
+    "sha256": "b27ffa7a8d541f322183a443edb6eedf7a86386b11c1c444589806e1da2b1650",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/founder-secret.js",
+    "bytes": 3556,
+    "sha256": "d8622fe93356ce0b0e18757361b54274e378ac41be7136ace13cde62d57d5a59",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/game-door.js",
+    "bytes": 693,
+    "sha256": "37f5d047e789a6fa23884a0971917bbed36a1d1a0425a9903bbe7613a0a01084",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/goldclub-apparel.js",
+    "bytes": 79,
+    "sha256": "caaf8a1e3e769ec1c3491f3eec07a41fe2dc08e97be8318a38d0008ded115475",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/lorcana/doors.js",
+    "bytes": 4604,
+    "sha256": "22adef596739f629c186a5dd282fe47c83498898a23852097e562bc3d5e9b44a",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/lounge-picker.js",
+    "bytes": 3001,
+    "sha256": "de75bc48815c117a44d5647fbf371b6acc9b2648303186c12f1535154cfc6e04",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/marvel/doors.js",
+    "bytes": 5066,
+    "sha256": "f9aa80344ce564d61d92ca70d3fb150167a7ebeefdc15b9983dc916cd50e95be",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/pokemon/chat/chat.js",
+    "bytes": 11803,
+    "sha256": "2a0bd69203386561aff9110f2532738a780c4a230b72bd10963ed8426843d401",
+    "apiPaths": [
+      "/api/lounge-chat/"
+    ]
+  },
+  {
+    "path": "hall-of-legends/pokemon/doors.js",
+    "bytes": 4718,
+    "sha256": "e5048cc7168dda975c07820f3b170e2830c673a167d618dc5a7a46ebdcb3ad52",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/riftbound/doors.js",
+    "bytes": 2037,
+    "sha256": "02e3f69ed191df7b50140ad2b60333a161bfe7035249c4e32f3df4ad98360655",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/starwars/doors.js",
+    "bytes": 4905,
+    "sha256": "dd3c9b9d953fef4edfabc357f76b3ed3f5cb4b0a538b0a9ce3f000703273e36f",
+    "apiPaths": []
+  },
+  {
+    "path": "hall-of-legends/starwars/galactic.js",
+    "bytes": 1485,
+    "sha256": "8b9b25759a704b8c2c40586115d10292962dfbbd30b62faa1706dc374adf1f38",
+    "apiPaths": [
+      "/api/process-two/waitlist?realm=starwars"
+    ]
+  },
+  {
+    "path": "hall-of-legends/yugioh/doors.js",
+    "bytes": 4114,
+    "sha256": "53bed6913823f7284e4ffbbea4879f6da39ec352d031a1c8f984a2537ea074b2",
+    "apiPaths": []
+  },
+  {
+    "path": "instagram-gold-arrival.js",
+    "bytes": 5484,
+    "sha256": "b69a9b15fb1abfb58692b0fa44eada8bc5b80e246231e6f8eaaaba33e480dfaf",
+    "apiPaths": []
+  },
+  {
+    "path": "instagram-page-one-preview.js",
+    "bytes": 4603,
+    "sha256": "c6ed564083fdc6a1249979222082f67afa935aa01789250e6e4abff18411c8fa",
+    "apiPaths": []
+  },
+  {
+    "path": "instagram-prelaunch/day-33/inspection.js",
+    "bytes": 6672,
+    "sha256": "1b54c76a3772408d7c30ed9d2796dfeadd37e7c55d5e8dd20bb8f24eee5d7a76",
+    "apiPaths": []
+  },
+  {
+    "path": "instagram-prelaunch/day-33/player.js",
+    "bytes": 2107,
+    "sha256": "501dc21521d91995d05a1ac7d68b24b45a6b4b76c0f31adb314a0941d3194df0",
+    "apiPaths": []
+  },
+  {
+    "path": "instagram-slides.js",
+    "bytes": 32881,
+    "sha256": "0320c5f244b21db1d6b79bf7c8ef748cb37682ac5c34c093264a89c71994a727",
+    "apiPaths": []
+  },
+  {
+    "path": "label-inspector/app.js",
+    "bytes": 3264,
+    "sha256": "47d295c0d05402aa07339bd86ca487803268d3e278eb2df6fe008dc31f81f0f8",
+    "apiPaths": []
+  },
+  {
+    "path": "labels/goldclub-label.js",
+    "bytes": 1849,
+    "sha256": "189ab0827de05d932388f8852bf0cf59ad05b8887c6b50cf8455888625df5484",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-apparel.js",
+    "bytes": 1569,
+    "sha256": "f3e196f24a5f1c47668f6e963f38fa851fc6af5830d197a43005cbb8dc184903",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-brand.js",
+    "bytes": 5548,
+    "sha256": "856930854a5d8791151b8b4ca220e5a110ec7ff53631bbdbf22fc5cfa54c965b",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-card-renderer.js",
+    "bytes": 10197,
+    "sha256": "d32cd7d64f2e7fb0a8a3a82001969607484590600ddd11aab926b77dace0d1ad",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-catalog-loader.js",
+    "bytes": 5081,
+    "sha256": "208062a1d852d246ec954e88f1c35c6c9629ce44ed2858fbd9d625d48865ee32",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-celebration.js",
+    "bytes": 1235,
+    "sha256": "ecd71bb30cf041e75c357984cc01d0d441b9eb64baef3b2056182850d26a5ee3",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-home-slab-turn.js",
+    "bytes": 3275,
+    "sha256": "8c617dc12eb98d131fdf575a893b5e7aa0a0784aa2c878dcc513345ac6ed740b",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-image-fit.js",
+    "bytes": 466,
+    "sha256": "12c539e2532fe10440ac19643944d5159c57b1a5aedfcd45047c950179957d12",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-label-preview.js",
+    "bytes": 1553,
+    "sha256": "11c23c05cf527756fec30c1ecf265abf5f01beca82d6f3b22dc8d95f4a857955",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-lounge-membership.js",
+    "bytes": 1775,
+    "sha256": "cb5454cb4e87c3af25dfa3025edb15777b0915f7c4a27d3f39281382b7eeda13",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-queue.js",
+    "bytes": 1581,
+    "sha256": "e4177d79ad1cb2e7dc9dcc9d80b4bd514869bfb377ec76ebfe6af3e0519aab8c",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-rotating-card.js",
+    "bytes": 16110,
+    "sha256": "85203f871ac93629c0d61b6515b00544e914f9acb33d9fa70d5363df65479634",
+    "apiPaths": []
+  },
+  {
+    "path": "lore-worlds.js",
+    "bytes": 4469,
+    "sha256": "5399c1060a2d83d4351e22f51baf4765f103bf170fae7889b432de1566004522",
+    "apiPaths": []
+  },
+  {
+    "path": "queue-status.js",
+    "bytes": 2325,
+    "sha256": "348fcbf5537940c96b665d957aea88f2b87c2028bdb2c562b08c286ce420cd2b",
+    "apiPaths": [
+      "/api/process-three/queue-status"
+    ]
+  },
+  {
+    "path": "realm-reveal.js",
+    "bytes": 5096,
+    "sha256": "183a6461074105b0d443b8974bf104951af729178a63d8f75f12da3b0bc4d238",
+    "apiPaths": []
+  },
+  {
+    "path": "realms/data.js",
+    "bytes": 1676,
+    "sha256": "341ee75d0635e8a8263823a3467383df92d313154b95c12b1a73510c6d3f1aa2",
+    "apiPaths": []
+  },
+  {
+    "path": "realms/embedded.js",
+    "bytes": 1449,
+    "sha256": "5f6524fcd9b30f7f1a8c1141066e27f82d08c107452392c85a1d7871ed0a9444",
+    "apiPaths": []
+  },
+  {
+    "path": "realms/gateway.js",
+    "bytes": 2301,
+    "sha256": "66d7ea79e57eaae39066f10a0321de545309613c32d492257ec019341f450c10",
+    "apiPaths": []
+  },
+  {
+    "path": "realms/riftbound/inspect.js",
+    "bytes": 287,
+    "sha256": "7ee7438db08f2f450a6056adc0148184eff4245fe8917dcb4d3e877e341d3edc",
+    "apiPaths": []
+  },
+  {
+    "path": "realms/starwars/showcase.js",
+    "bytes": 2829,
+    "sha256": "737cf3d6864465fd101ce35d5a907b09448f7bbf3ecdd5dc73dfa452eebe143b",
+    "apiPaths": []
+  },
+  {
+    "path": "security/label-comparison.js",
+    "bytes": 555,
+    "sha256": "e41be148e4c87f2d4d599d1f25c8df7a07f1a9c26bce11bdea30c41194ce5d4a",
+    "apiPaths": []
+  },
+  {
+    "path": "security/security.js",
+    "bytes": 4979,
+    "sha256": "93c2268b6bc4d1303e543fac27145d011c2cf934c42325b31e4607f40e71a2d1",
+    "apiPaths": []
+  },
+  {
+    "path": "si-editorial-v1.js",
+    "bytes": 8841,
+    "sha256": "87f5b1abd166fc07410b47687bd8b5a2ca431a9cd35cba943e9d7244e28c563a",
+    "apiPaths": []
+  },
+  {
+    "path": "si-editorial.js",
+    "bytes": 19570,
+    "sha256": "0c828cb39f83a33b9b964642fefd74a34061a7d42c1bc724bc9a780f4f71268f",
+    "apiPaths": []
+  },
+  {
+    "path": "si-hybrid-label.js",
+    "bytes": 2255,
+    "sha256": "663c93041cac00fc3b3a06d68da61cb8013817156f071b20eb9edccd0352d30f",
+    "apiPaths": []
+  },
+  {
+    "path": "sig-card-showcase.js",
+    "bytes": 444,
+    "sha256": "70d4af1ad458101ea0ba5c63235e21a7e0039d4a76c85eca1485ffca52596fb9",
+    "apiPaths": []
+  },
+  {
+    "path": "sig-image-inspector.js",
+    "bytes": 9404,
+    "sha256": "98282b06b8ddd25248c786dabe7eea5a6a39d52249ed5439171e40a09302978f",
+    "apiPaths": []
+  },
+  {
+    "path": "sig-launch-list.js",
+    "bytes": 688,
+    "sha256": "d91d808afd2934acd88bce00bbb7c5c85bccbdb0d2648c36dd43bb4beb583296",
+    "apiPaths": []
+  },
+  {
+    "path": "sig-rotating-card.js",
+    "bytes": 47,
+    "sha256": "fd0264ee3695b280baae8a5cf0a4a187c74ce76d8aa31c36c7dba4daf0870965",
+    "apiPaths": []
+  },
+  {
+    "path": "sunday-drop-clock.js",
+    "bytes": 836,
+    "sha256": "fcbf361e13ee84cdd5d0e378b8b1e731ae5cdc937ee960f93c01d38c8db15c6a",
+    "apiPaths": []
+  },
+  {
+    "path": "sunday-drop-tracker.js",
+    "bytes": 8731,
+    "sha256": "50e1e5886aa63ce14d790dad0869edbf6fd9552baf5668381eea81051cbe64ae",
+    "apiPaths": [
+      "/api/process-three/queue-status"
+    ]
+  },
+  {
+    "path": "uv-crowns.js",
+    "bytes": 1108,
+    "sha256": "e386e50e9477d5e1c315163ac41ce5544ffe2355872480fff7e87d4bcbd5caa5",
+    "apiPaths": []
+  },
+  {
+    "path": "vendor/JsBarcode.code128.min.js",
+    "bytes": 27899,
+    "sha256": "7525fc29d3597337d8366b15414871f63b70b967c94fa0c4edb135efe1d6709d",
+    "apiPaths": []
+  },
+  {
+    "path": "website/card-showcase/scene.js",
+    "bytes": 10017,
+    "sha256": "80357561ffc0b5cbad68fd86462d611db8079cf73c7792c57e3cf1bb6f51f4a9",
+    "apiPaths": []
+  },
+  {
+    "path": "website/customer-care.js",
+    "bytes": 982,
+    "sha256": "7ea895806519852b6d3d56c96f632a99057ececaa6855106b2b39cc201892899",
+    "apiPaths": []
+  },
+  {
+    "path": "website/founders-application.js",
+    "bytes": 4175,
+    "sha256": "189c42a2a686515164ce224838bb9a3990a44eeef166dddccafffce8b1dc1336",
+    "apiPaths": []
+  },
+  {
+    "path": "website/grading-transparency.js",
+    "bytes": 3700,
+    "sha256": "ebfd3394ab97a966a79b643fa52929c2275a31360986bb00c87031d49da08a0b",
+    "apiPaths": []
+  },
+  {
+    "path": "website/guarantee.js",
+    "bytes": 446,
+    "sha256": "93de7aa44c098284c0a99a0aad24dda24c2ccd97f563ca0fa6510b2fad0b9c55",
+    "apiPaths": []
+  },
+  {
+    "path": "website/label-inspector/app.js",
+    "bytes": 3403,
+    "sha256": "98a2b00e3cba60a89562da6157be1a93656f2087658424f7635c7cff91448752",
+    "apiPaths": []
+  },
+  {
+    "path": "website/order-help.js",
+    "bytes": 6990,
+    "sha256": "8466993de5f1239cf3448d251207f4075f5c6b3e8f39e8ae797b233e8e418d63",
+    "apiPaths": []
+  },
+  {
+    "path": "website/queue-activity-ui.js",
+    "bytes": 2292,
+    "sha256": "9d0787f1c5cc880d40d9db1be56ee15bb8f16330fc17eafb508036e430f44e5a",
+    "apiPaths": []
+  },
+  {
+    "path": "website/queue-activity.js",
+    "bytes": 1595,
+    "sha256": "03e629a61c61c37dc983003d816f660a293c09aaec864d7cbeb6b39a8b3964e7",
+    "apiPaths": []
+  },
+  {
+    "path": "website/queue-demo.js",
+    "bytes": 1581,
+    "sha256": "e4177d79ad1cb2e7dc9dcc9d80b4bd514869bfb377ec76ebfe6af3e0519aab8c",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-card-experience.js",
+    "bytes": 28378,
+    "sha256": "1e0882ace18d8e1163a184f0e27f864ade905a7dad6877d5572520f19a17134f",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-card-showcase.js",
+    "bytes": 444,
+    "sha256": "70d4af1ad458101ea0ba5c63235e21a7e0039d4a76c85eca1485ffca52596fb9",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-founder-sports-card.js",
+    "bytes": 6550,
+    "sha256": "fccf132b04cfc05ae5420cb71dd6b5f78458e7ba93261ce0ea5ab01528193848",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-founder-trading-card.js",
+    "bytes": 376,
+    "sha256": "317e1063613ad7c48a3dfa660e814223de5ab98f9901ca8906ed1ffde559e807",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-image-inspector.js",
+    "bytes": 9404,
+    "sha256": "98282b06b8ddd25248c786dabe7eea5a6a39d52249ed5439171e40a09302978f",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-label-features.js",
+    "bytes": 1277,
+    "sha256": "04b8de4480936de3565fe4aa3bdef06178f66586071e01f36cb8a7651653f88e",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-launch-list.js",
+    "bytes": 169,
+    "sha256": "61b368f4a5de86ae47d27d501e8faf65e54b799bfec41b492f7a56b6f6fd2564",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-lounge-reveal.js",
+    "bytes": 1668,
+    "sha256": "cb741a75233aca59f2c404ca402c1289eb2f25368f56862bdc4e326b0749b493",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-magnifier.js",
+    "bytes": 3067,
+    "sha256": "3670bbcc6ed2b84751a209d2ef72d771886fc91efb7586d39ac722868b2fc469",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-membership-card.js",
+    "bytes": 6423,
+    "sha256": "7fe8fd86b96d03ff67c6826414d1141ab8686bd2487e0d3d92562e243ac41c1d",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-mobile-home.js",
+    "bytes": 894,
+    "sha256": "983693667001a30f1178057a2ea80dd57a1b276ffe2a58f6f6d7b5a84ec76540",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-preentry.js",
+    "bytes": 628,
+    "sha256": "7505b1fa8b49ed81f3c41ffcad99ce499d36410b1a4302988fbe296c80c15284",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-rotating-card.js",
+    "bytes": 47,
+    "sha256": "fd0264ee3695b280baae8a5cf0a4a187c74ce76d8aa31c36c7dba4daf0870965",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-service-levels.js",
+    "bytes": 384,
+    "sha256": "4f4c43e637412621fe52214c60714e3d564b252497dca1509ce5b9139b544edf",
+    "apiPaths": []
+  },
+  {
+    "path": "website/sig-support.js",
+    "bytes": 1832,
+    "sha256": "dd491c2996bc59a31b7ec9f68dd667e1b74f5886aa52e533ed67b48bec4d917a",
+    "apiPaths": []
+  },
+  {
+    "path": "website/submission-review.js",
+    "bytes": 6048,
+    "sha256": "8cd30d82e95f568eab8bf7b502ae22ce9639cb7c64beaaa19d28718cccf9b952",
+    "apiPaths": []
+  },
+  {
+    "path": "website/tracking.js",
+    "bytes": 3017,
+    "sha256": "904c5e5f4ca0568f09df6180df94d8b28955392c54fa2b0be15b9e295d341817",
+    "apiPaths": []
+  },
+  {
+    "path": "website/verification.js",
+    "bytes": 2281,
+    "sha256": "0ac9c902a1256e88da79f90fa3345e5e2655d7de724ebfa10e954dfc02a50dd1",
+    "apiPaths": []
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "LORE Refactor Review",
+    "slug": "lore-refactor-review",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "scheme": "lore-review",
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.loregraded.refactorreview"
+    },
+    "android": {
+      "package": "com.loregraded.refactorreview"
+    },
+    "plugins": ["expo-video"]
+  }
+}
