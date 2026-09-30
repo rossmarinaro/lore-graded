@@ -1,26 +1,33 @@
 require('dotenv').config();
 
-/*** MONGO DB ***/
+import { MongoClient } from 'mongodb';
 
-let _mongoClientPromise = (globalThis as any)['_mongoClientPromise'];
-const MongoClient = require('mongodb').MongoClient;
+declare global {
+  // Use var inside declare global so it registers on the globalThis object
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
+}
 
-class Database {
+export class Database {
 
-    private static client: typeof MongoClient;
+    public static clientPromise: Promise<MongoClient>
+    public static client: MongoClient
+    public static options: {
+        useUnifiedTopology: boolean;
+        maxPoolSize: number;
+        minPoolSize: number;
+        maxIdleTimeMS: number;
+    } = { 
+        useUnifiedTopology: true,
+        maxPoolSize: 50,
+        minPoolSize: 10,
+        maxIdleTimeMS: 30000
+    };
 
     static async init()
     { 
         try {
-            if (process.env.NODE_ENV === 'development') {
-        
-                if (!_mongoClientPromise)  //global variables persist across Nodemon reloads
-                    _mongoClientPromise = await this._connect();
-                this.client = _mongoClientPromise;
-            }
 
-            else 
-                this.client = await this._connect();    
+            this.client = await this.clientPromise;
 
             //rate-limiting time to live index
 
@@ -31,20 +38,9 @@ class Database {
         }
     }
 
-    /***
-    * @returns {Promise<MongoClient>}
-    */
-
-    static async _connect() 
+    static async connect(): Promise<MongoClient>
     {
-        const options = { 
-            useUnifiedTopology: true,
-            maxPoolSize: 50,
-            minPoolSize: 10,
-            maxIdleTimeMS: 30000
-        };
-
-        const connection = await MongoClient.connect(process.env.MONGODB_ATLAS_URI, options); 
+        const connection = await MongoClient.connect(process.env.MONGODB_ATLAS_URI as string, this.options); 
 
         console.log(connection ? `connection to database ${ process.env.MONGODB_DATABASE } successful.` : `cannot connect to database: ${ process.env.MONGODB_DATABASE }`);
         
@@ -52,7 +48,7 @@ class Database {
 
     }
 
-    static async query(collection: string, options = {}) : Promise<Object> {
+    static async query(collection: string, options = {}) {
         const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).findOne(options);
         return user;
     }
@@ -62,7 +58,7 @@ class Database {
         return cluster;
     }
 
-    static async updateOne(collection: string, queryParams: Object, updateParams: Object): Promise<Object> {
+    static async updateOne(collection: string, queryParams: Object, updateParams: Object) {
         const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).findOneAndUpdate(
             queryParams, 
             { $set: updateParams }, 
@@ -78,4 +74,15 @@ class Database {
     }
 };
 
-module.exports = { Database };
+// if (process.env.NODE_ENV === 'development') 
+// {
+//     if (!global._mongoClientPromise) {
+//         Database.client = new MongoClient(process.env.MONGODB_ATLAS_URI as string, Database.options);
+//         global._mongoClientPromise = Database.client.connect(); 
+//     }
+//     Database.clientPromise = global._mongoClientPromise;
+// } 
+// else {
+//     const client = new MongoClient(process.env.MONGODB_ATLAS_URI as string, Database.options);
+//     Database.clientPromise = client.connect();
+// }
