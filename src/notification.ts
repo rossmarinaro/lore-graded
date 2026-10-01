@@ -1,4 +1,4 @@
-
+import twilio from 'twilio';
 import nodemailer from 'nodemailer';
 import { CheckoutMetadata } from './types';
 
@@ -8,6 +8,8 @@ import { CheckoutMetadata } from './types';
 export async function sendEmailSMS(account: CheckoutMetadata, type: string, data?: string) 
 {
     try {
+
+        /********************* EMAIL */ 
 
         let subject, html;
         const attachments = [];
@@ -46,15 +48,27 @@ export async function sendEmailSMS(account: CheckoutMetadata, type: string, data
             to: account.email, 
             subject, // Subject line
             html,  //html to be sent,
-            //attachments
+            attachments
         },
         
         info = await transporter.sendMail(email);
     
         console.log('Message sent: ', info.messageId);
+
+        /********************* SMS */ 
+
+        const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+        const SMS = await twilioClient.messages.create({
+            body: 'Your verification code is 123456',
+            from: process.env.TWILIO_PHONE_NUMBER, // Your Twilio number
+            to: `+${ account.phone }`//'+1234567890'                      // Recipient number
+        });
+        
+        console.log('SMS sent successfully:', SMS.sid);
     }
 
-    catch(err){ 
+    catch(err) { 
         console.log('error automated email/sms: ', err); 
     }
 
