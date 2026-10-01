@@ -1,5 +1,4 @@
 node_modules
-.env
 /client/loregraded/loregraded/.claude
 /client/loregraded/loregraded/.expo
 /client/loregraded/loregraded/node_modules
