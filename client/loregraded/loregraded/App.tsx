@@ -16,7 +16,7 @@ export default function AppScreen()
       return (
         <iframe 
           src={websiteUrl} 
-          style={styles.webview} 
+          style={{ border: 'none', margin: 0, flex: 1, backgroundColor: '#0a0f1d' }} 
           title="WebView Alternative for Web"
         />
       );

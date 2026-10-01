@@ -3,7 +3,6 @@ require('dotenv').config();
 import { MongoClient } from 'mongodb';
 
 declare global {
-  // Use var inside declare global so it registers on the globalThis object
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
@@ -27,6 +26,19 @@ export class Database {
     { 
         try {
 
+            //init and cache mongodb client
+
+            if (process.env.NODE_ENV === 'development') 
+            {
+                if (!global._mongoClientPromise) {
+                    this.client = new MongoClient(process.env.MONGODB_ATLAS_URI as string, this.options);
+                    global._mongoClientPromise = this.client.connect(); 
+                }
+                this.clientPromise = global._mongoClientPromise;
+            } 
+            else 
+                this.clientPromise = new MongoClient(process.env.MONGODB_ATLAS_URI as string, this.options).connect();
+            
             this.client = await this.clientPromise;
 
             //rate-limiting time to live index
@@ -74,15 +86,3 @@ export class Database {
     }
 };
 
-// if (process.env.NODE_ENV === 'development') 
-// {
-//     if (!global._mongoClientPromise) {
-//         Database.client = new MongoClient(process.env.MONGODB_ATLAS_URI as string, Database.options);
-//         global._mongoClientPromise = Database.client.connect(); 
-//     }
-//     Database.clientPromise = global._mongoClientPromise;
-// } 
-// else {
-//     const client = new MongoClient(process.env.MONGODB_ATLAS_URI as string, Database.options);
-//     Database.clientPromise = client.connect();
-// }
