@@ -8,8 +8,9 @@ declare global {
 
 export class Database {
 
-    public static clientPromise: Promise<MongoClient>
+    private static clientPromise: Promise<MongoClient>
     public static client: MongoClient
+
     public static options: {
         useUnifiedTopology: boolean;
         maxPoolSize: number;

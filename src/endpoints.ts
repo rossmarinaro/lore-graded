@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { stripe } from './config/stripe.js'; // Ensure correct path extension for NodeNext
 import { Database } from './database.js';
-import { sendEmailSMS } from './notification.js';
+import { sendNotification } from './notification.js';
 import express from 'express';
 
 export const router = express.Router();
@@ -85,7 +85,7 @@ router.post('/webhooks', async (req: Request, res: Response) => {
               
             //send confirmation email / SMS
 
-            sendEmailSMS(webhookSession, 'purchase complete')
+            sendNotification(webhookSession, 'purchase complete')
                 .then(email => console.log('email sent: ', email))
                 .catch(console.error);
           }

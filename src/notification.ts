@@ -5,9 +5,11 @@ import { CheckoutMetadata } from './types';
 
 //send confirmation email / SMS
 
-export async function sendEmailSMS(account: CheckoutMetadata, type: string, data?: string) 
+export async function sendNotification(account: CheckoutMetadata, contextType: string, data?: string) 
 {
     try {
+
+        const messageBody = `Thank you for your purchase. You will be added to the queue and notified if you've been selected.`;
 
         /********************* EMAIL */ 
 
@@ -25,26 +27,26 @@ export async function sendEmailSMS(account: CheckoutMetadata, type: string, data
             tls: { rejectUnauthorized: false } 
         }); 
 
-        switch (type)
+        switch (contextType)
         {
             case 'purchase complete':
     
-                subject = "Purchase Complete";
-        
-                html = `
-                    <b><p>Thank you for your purchase. You will be added to the queue and notified if you've been selected.</p></b>
-                `;
+                subject = 'Purchase Complete';
+                html = `<b><p>${ messageBody }</p></b>`;
 
                 if (data?.length) 
                     attachments.push({ filename: 'log.txt', content: data });
     
             break;
+            default: {
+                console.log('cannot send email or SMS - contextType not defined.');
+            } 
         }
     
         //send mail with defined transport object
     
         const email = {
-            from: `"LOREGRADED" <${process.env.SMTP_EMAIL}>`, // sender address
+            from: `"LOREGRADED" <${ process.env.SMTP_EMAIL }>`, // sender address
             to: account.email, 
             subject, // Subject line
             html,  //html to be sent,
@@ -53,19 +55,19 @@ export async function sendEmailSMS(account: CheckoutMetadata, type: string, data
         
         info = await transporter.sendMail(email);
     
-        console.log('Message sent: ', info.messageId);
+        console.log('email sent: ', info.messageId);
 
         /********************* SMS */ 
 
         const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
         const SMS = await twilioClient.messages.create({
-            body: 'Your verification code is 123456',
-            from: process.env.TWILIO_PHONE_NUMBER, // Your Twilio number
-            to: `+${ account.phone }`//'+1234567890'                      // Recipient number
+            body: messageBody,
+            from: process.env.TWILIO_PHONE_NUMBER, 
+            to: `+${ account.phone }`//'+1234567890' 
         });
         
-        console.log('SMS sent successfully:', SMS.sid);
+        console.log('SMS sent:', SMS.sid);
     }
 
     catch(err) { 

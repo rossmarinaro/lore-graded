@@ -20,3 +20,13 @@ Strict Constraints:
 - Avoid placeholders or "code goes here" comments inside the core logic.
 
 I have attached the .zip file of the current GoDaddy monolithic app. Please extract, analyze its files, and rewrite it into a separated React/TypeScript frontend folder and a Node.js/Express backend folder as specified in our architecture plan.
+
+
+
+
+//-----------------------
+
+Rewrite this exact locally runnable application to use react and typescript for the front end and nodejs and express for the backend. 
+be explicit and concise with variable names and layout. Make sure css styling is equivalent to the hosted site. 
+We want to use a separate api layer in addition to the existing drizzle sql queries
+which will allow us to access endpoints from a remote restapi.
