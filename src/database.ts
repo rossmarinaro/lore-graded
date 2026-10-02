@@ -1,6 +1,7 @@
 require('dotenv').config();
 
-import { MongoClient } from 'mongodb';
+import { InsertOneResult, MongoClient, WithId } from 'mongodb';
+import { User } from './types';
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
@@ -23,7 +24,7 @@ export class Database {
         maxIdleTimeMS: 30000
     };
 
-    static async init()
+    public static async init()
     { 
         try {
 
@@ -51,38 +52,38 @@ export class Database {
         }
     }
 
-    static async connect(): Promise<MongoClient>
+    public static async connect(): Promise<MongoClient>
     {
         const connection = await MongoClient.connect(process.env.MONGODB_ATLAS_URI as string, this.options); 
 
         console.log(connection ? `connection to database ${ process.env.MONGODB_DATABASE } successful.` : `cannot connect to database: ${ process.env.MONGODB_DATABASE }`);
         
         return connection;
-
     }
 
-    static async query(collection: string, options = {}) {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).findOne(options);
+    public static async findOne(options: User): Promise<WithId<User> | null> {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).findOne(options);
         return user;
     }
 
-    static async queryAll(collection: string, limit = -1, options = {}): Promise<Object>  {
-        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).find(options).limit(limit).toArray();
+    public static async findAll(limit = -1, options: User): Promise<WithId<User>[]> {
+        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).find(options).limit(limit).toArray();
         return cluster;
     }
 
-    static async updateOne(collection: string, queryParams: Object, updateParams: Object) {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).findOneAndUpdate(
+    public static async findOneAndUpdate(queryParams: User, updateParams: User, upsert = false): Promise<WithId<User> | null>
+    {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).findOneAndUpdate(
             queryParams, 
             { $set: updateParams }, 
-            { returnDocument: 'after', projection: { password: 0 } /*, upsert: true */ }
+            { returnDocument: 'after', projection: { password: 0 }, upsert }
         );
 
         return user;
     }
 
-    static async insertOne(collection: string, insertParams: Object): Promise<Object>  {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).insertOne(insertParams);
+    public static async insertOne(insertParams: User): Promise<InsertOneResult<User>> {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).insertOne(insertParams);
         return user;
     }
 };
