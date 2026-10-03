@@ -25,7 +25,7 @@ export async function createUser (req: Request<Record<string, never>, unknown, U
         paid: false,
         order: { cards: [], created_at: new Date() }
       };
-
+  
       const entry = await Database.insertOne(user);
 
       res.status(200).json({ success: entry.acknowledged });
