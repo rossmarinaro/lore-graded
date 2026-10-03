@@ -2,28 +2,32 @@ import { Request, Response } from 'express';
 import { stripe } from './config/stripe.js'; 
 import { Database } from './database.js';
 import { sendNotification } from './notification.js';
-import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken'
+import jwt, { VerifyErrors } from 'jsonwebtoken'
 import express from 'express';
-import { User } from './types.js';
+import { AuthenticatedRequest, UnAuthenticatedRequest, User, UserJwtPayload } from './types.js';
 import { verifyToken } from './verification.js';
+import argon2 from 'argon2'
 
 export const router = express.Router();
 
-router.post('/create-user', async (req: Request, res: Response) => {
+router.post('/create-user', async (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) => {
 
   try 
   {
-    const { username, email, phone } = req.body;
+    const { username, password, email, phone } = req.body;
 
-    const account = await Database.findOne({ email: req.body.email });
+    const account = await Database.findOne({ email: req.body.email }, 1);
 
     if (!account)
     {
       const user = { 
+        _id: '',
         username, 
+        password,
         email, 
         phone, 
-        paid: false 
+        paid: false,
+        order: { cards: [], created_at: new Date() }
       };
 
       const entry = await Database.insertOne(user);
@@ -43,14 +47,20 @@ router.post('/create-user', async (req: Request, res: Response) => {
 //------------------------------------------------- 
 
 
-router.post('/login', verifyToken, async (req: Request, res: Response) => {
+router.post('/login', async (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) => {
 
   try {
 
-    const account = await Database.findOne({ email: req.body.email });
+    const account = await Database.findOne({ email: req.body.email }, 1);
 
-    if (account)
-      jwt.sign({ data: account }, process.env.JWT_SIGN_IN as string, (err: Error | null, webtoken: string | undefined) => {
+    if (account) 
+    {
+      const passwordIsValid = await argon2.verify(account.password, req.body.password);
+      
+      if (!passwordIsValid) 
+        return res.status(401).json({ error: 'Invalid email or password.' });
+
+      jwt.sign({ _id: account._id }, process.env.JWT_SIGN_IN as string, (err: Error | null, webtoken: string | undefined) => {
 
         if (err)
           res.status(500).json({ message: err });
@@ -61,7 +71,7 @@ router.post('/login', verifyToken, async (req: Request, res: Response) => {
         }
         res.status(200).json({ success: true });
       });
-      
+    }
     else
       res.status(401).json({ success: false });
   }
@@ -73,21 +83,33 @@ router.post('/login', verifyToken, async (req: Request, res: Response) => {
 
 //------------------------------------------------- 
 
-router.post('/submit-order', async (req: Request<Record<string, never>, unknown, User>, res: Response) => {
+router.post('/submit-order', verifyToken, async (req: AuthenticatedRequest, res: Response) => {
 
   try {
-    const _id = req.body._id;
-    const order = req.body.order;
-    const account = await Database.findOneAndUpdate({ _id }, { _id, order });
 
-    if (account)
-    {
-      sendNotification(account, 'submit order')
-        .then(email => console.log('email sent: ', email))
-        .catch(console.error);
+    jwt.verify(req.body.webtoken, process.env.JWT_SIGN_IN as string, async (err: VerifyErrors | null, authData: unknown) => { 
 
-      res.status(200).json({ success: true });
-    }
+      if (err || !authData) {
+        console.log(`jwt.verify() failed: ${ err }`); 
+        res.json({ error: 'Access denied!' });
+        return;
+      }
+
+      const data = authData as UserJwtPayload;
+      const _id = data._id;
+      const account = await Database.findOneAndUpdate({ _id }, { _id, order: req.body.order }, 0, 1);
+
+      if (account)
+      {
+        sendNotification(account, 'submit order')
+          .then(email => console.log('email sent: ', email))
+          .catch(console.error);
+
+        res.status(200).json({ success: true });
+      }
+      
+    });
+
   }
   catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -101,7 +123,7 @@ router.post('/checkout', async (req: Request, res: Response) => {
 
   try {
 
-    const account = await Database.findOne({ _id: req.body.id });
+    const account = await Database.findOne({ _id: req.body.id }, 0, 1);
 
     if (account)
     {
@@ -167,7 +189,7 @@ router.post('/webhooks', async (req: Request, res: Response) => {
       case 'checkout.session.completed':
 
         const _id = webhookSession._id;
-        const account = await Database.findOneAndUpdate({ _id }, { _id, paid: true });
+        const account = await Database.findOneAndUpdate({ _id }, { _id, paid: true }, 0, 1);
 
         if (account)
         {

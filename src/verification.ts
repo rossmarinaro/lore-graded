@@ -1,15 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import argon2 from 'argon2'
 import { Database } from './database';
+import { AuthenticatedRequest, UserJwtPayload } from './types';
 
-interface AuthenticatedRequest extends Request {
-  token?: string;
-  _id?: string;
-}
-
-export interface UserJwtPayload extends jwt.JwtPayload {
-    userId: string;
-}
 
 export function verifyToken (req: AuthenticatedRequest, _res: Response, next: NextFunction)
 {
@@ -61,7 +55,27 @@ export const verifyCookie = async (req: AuthenticatedRequest, res: Response, nex
     }
 }
 
+
+//----------------------------------------------
+
+
 export const destroyCookie = (key: string, res: Response) => {
     res.cookie(key, '', { httpOnly: true, expires: new Date(0) }); 
 }
 
+
+//----------------------------------------------
+
+
+export async function encryptPassword(password: string): Promise<string | null>
+{
+    try {
+        const passwordHash = await argon2.hash(password); 
+        return passwordHash;
+    }
+
+    catch(error) {
+        console.log(`Error encrypting password: ${ password }`, error);
+        return null;
+    }
+}
