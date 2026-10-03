@@ -1,17 +1,13 @@
-import { Request, Response } from 'express';
-import { stripe } from './config/stripe.js'; 
-import { Database } from './database.js';
-import { sendNotification } from './notification.js';
-import jwt, { VerifyErrors } from 'jsonwebtoken'
-import express from 'express';
-import { AuthenticatedRequest, UnAuthenticatedRequest, User, UserJwtPayload } from './types.js';
-import { verifyToken } from './verification.js';
+import { Database } from '../database'
+import { Request, Response } from 'express'
+import { AuthenticatedRequest, UnAuthenticatedRequest, User, UserJwtPayload } from '../types'
 import argon2 from 'argon2'
+import jwt, { VerifyErrors } from 'jsonwebtoken'
+import { sendNotification } from '../notification'
+import { stripe } from '../config/stripe.js'
 
-export const router = express.Router();
-
-router.post('/create-user', async (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) => {
-
+export async function createUser (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) 
+{
   try 
   {
     const { username, password, email, phone } = req.body;
@@ -41,14 +37,13 @@ router.post('/create-user', async (req: Request<Record<string, never>, unknown, 
   catch (error) {
     res.status(500).json({ success: false });
   }
-});
+}
 
 
-//------------------------------------------------- 
+//----------------------------------
 
-
-router.post('/login', async (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) => {
-
+export async function login (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) 
+{
   try {
 
     const account = await Database.findOne({ email: req.body.email }, 1);
@@ -78,13 +73,13 @@ router.post('/login', async (req: Request<Record<string, never>, unknown, UnAuth
   catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
-});
+}
+
+//----------------------------------------------------
 
 
-//------------------------------------------------- 
-
-router.post('/submit-order', verifyToken, async (req: AuthenticatedRequest, res: Response) => {
-
+export async function submitOrder (req: AuthenticatedRequest, res: Response)  
+{
   try {
 
     jwt.verify(req.body.webtoken, process.env.JWT_SIGN_IN as string, async (err: VerifyErrors | null, authData: unknown) => { 
@@ -115,12 +110,14 @@ router.post('/submit-order', verifyToken, async (req: AuthenticatedRequest, res:
     res.status(500).json({ error: 'Internal Server Error' });
   }
 
-});
+}
 
-//------------------------------------------------- stripe checkout
 
-router.post('/checkout', async (req: Request, res: Response) => { 
+//-----------------------------------------------
 
+
+export async function checkout (req: Request, res: Response) 
+{ 
   try {
 
     const account = await Database.findOne({ _id: req.body.id }, 0, 1);
@@ -172,13 +169,15 @@ router.post('/checkout', async (req: Request, res: Response) => {
     console.error('Stripe error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-});
+}
 
 
-//------------------------------------------
+//----------------------------------
 
-router.post('/webhooks', async (req: Request, res: Response) => { 
 
+
+export async function webhook (req: Request, res: Response) 
+{ 
   try {
 
     const event = req.body, 
@@ -214,7 +213,4 @@ router.post('/webhooks', async (req: Request, res: Response) => {
   }
 
   res.json({ received: true });
-});
-
-
-
+}

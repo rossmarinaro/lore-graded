@@ -1,8 +1,8 @@
 import { Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import argon2 from 'argon2'
-import { Database } from './database';
-import { AuthenticatedRequest, UserJwtPayload } from './types';
+import { Database } from './database'
+import { AuthenticatedRequest, UserJwtPayload } from './types'
 
 
 export function verifyToken (req: AuthenticatedRequest, _res: Response, next: NextFunction)
