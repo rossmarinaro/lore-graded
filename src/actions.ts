@@ -1,10 +1,10 @@
-import { Database } from '../database'
+import { Database } from './database'
 import { Request, Response } from 'express'
-import { AuthenticatedRequest, UnAuthenticatedRequest, User, UserJwtPayload } from '../types'
+import { AuthenticatedRequest, UnAuthenticatedRequest, User, UserJwtPayload } from './types'
 import argon2 from 'argon2'
 import jwt, { VerifyErrors } from 'jsonwebtoken'
-import { sendNotification } from '../notification'
-import { stripe } from '../config/stripe.js'
+import { sendNotification } from './notification'
+import { stripe } from './config/stripe.js'
 
 export async function createUser (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) 
 {
@@ -55,7 +55,7 @@ export async function login (req: Request<Record<string, never>, unknown, UnAuth
       if (!passwordIsValid) 
         return res.status(401).json({ error: 'Invalid email or password.' });
 
-      jwt.sign({ _id: account._id }, process.env.JWT_SIGN_IN as string, (err: Error | null, webtoken: string | undefined) => {
+      jwt.sign({ _id: account._id }, process.env.JWT_SECRET as string, (err: Error | null, webtoken: string | undefined) => {
 
         if (err)
           res.status(500).json({ message: err });
@@ -75,6 +75,25 @@ export async function login (req: Request<Record<string, never>, unknown, UnAuth
   }
 }
 
+
+//----------------------------------------------------
+
+
+export async function logout (_req: Request, res: Response) 
+{
+  try {
+    res.clearCookie('session_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+    return res.status(200).json({ message: 'Logged out successfully.' });
+  }
+  catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 //----------------------------------------------------
 
 
@@ -82,7 +101,7 @@ export async function submitOrder (req: AuthenticatedRequest, res: Response)
 {
   try {
 
-    jwt.verify(req.body.webtoken, process.env.JWT_SIGN_IN as string, async (err: VerifyErrors | null, authData: unknown) => { 
+    jwt.verify(req.body.webtoken, process.env.JWT_SECRET as string, async (err: VerifyErrors | null, authData: unknown) => { 
 
       if (err || !authData) {
         console.log(`jwt.verify() failed: ${ err }`); 
@@ -214,3 +233,5 @@ export async function webhook (req: Request, res: Response)
 
   res.json({ received: true });
 }
+
+

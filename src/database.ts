@@ -13,12 +13,12 @@ export class Database {
     public static client: MongoClient
 
     public static options: {
-        useUnifiedTopology: boolean;
+        //useUnifiedTopology: boolean;
         maxPoolSize: number;
         minPoolSize: number;
         maxIdleTimeMS: number;
     } = { 
-        useUnifiedTopology: true,
+        //useUnifiedTopology: true,
         maxPoolSize: 50,
         minPoolSize: 10,
         maxIdleTimeMS: 30000
@@ -75,7 +75,7 @@ export class Database {
         const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string)
         .findOneAndUpdate(
             queryParams, 
-            { $set: updateParams }, 
+            { $set: updateParams },   
             { 
                 returnDocument: 'after', 
                 projection: { email, _id }, 
