@@ -1,4 +1,4 @@
-import path from 'path'
+//import path from 'path'
 import { express, app, PORT, rateLimiter } from './config/express'
 import { endpointRouter } from './endpoints';
 import { Database } from './database';
@@ -8,7 +8,7 @@ app.get('./app/', rateLimiter);
 app.use('/api', endpointRouter);
 
 //serve files
-app.use(express.static(path.join(__dirname, '../test')));
+//app.use(express.static(path.join(__dirname, '../test')));
 //app.use(express.static(path.join(__dirname, '../public')));
 
 Database.init().then(() => {
