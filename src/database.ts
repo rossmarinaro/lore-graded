@@ -1,7 +1,5 @@
-require('dotenv').config();
-
 import { InsertOneResult, MongoClient, WithId } from 'mongodb'
-import { BinaryChoice, User } from './types'
+import { BinaryChoice, User, MongoDBOptions } from './types'
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
@@ -12,17 +10,11 @@ export class Database {
     private static clientPromise: Promise<MongoClient>
     public static client: MongoClient
 
-    public static options: {
-        //useUnifiedTopology: boolean;
-        maxPoolSize: number;
-        minPoolSize: number;
-        maxIdleTimeMS: number;
-    } = { 
-        //useUnifiedTopology: true,
+    private static options: MongoDBOptions = { 
         maxPoolSize: 50,
         minPoolSize: 10,
         maxIdleTimeMS: 30000
-    };
+    }
 
     public static async init()
     { 
@@ -50,15 +42,6 @@ export class Database {
         catch (error) {
             console.log(`connection to database failed: ${ error }`);
         }
-    }
-
-    public static async connect(): Promise<MongoClient>
-    {
-        const connection = await MongoClient.connect(process.env.MONGODB_ATLAS_URI as string, this.options); 
-
-        console.log(connection ? `connection to database ${ process.env.MONGODB_DATABASE } successful.` : `cannot connect to database: ${ process.env.MONGODB_DATABASE }`);
-        
-        return connection;
     }
 
     public static async findOne(options: Object, email: BinaryChoice = 0, _id: BinaryChoice = 0): Promise<WithId<User> | null> {

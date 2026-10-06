@@ -1,79 +1,45 @@
 import { Database } from './database'
 import { Request, Response } from 'express'
-import { AuthenticatedRequest, UnAuthenticatedRequest, User, UserJwtPayload } from './types'
-import argon2 from 'argon2'
-import jwt, { VerifyErrors } from 'jsonwebtoken'
+import { AuthenticatedRequest, Order, User} from './types'
 import { sendNotification } from './notification'
-import { stripe } from './config/stripe.js'
+import Stripe from 'stripe';
 
-export async function createUser (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) 
-{
-  try 
-  {
-    const { username, password, email, phone } = req.body;
-
-    const account = await Database.findOne({ email: req.body.email }, 1);
-
-    if (!account)
-    {
-      const user = { 
-        _id: '',
-        username, 
-        password,
-        email, 
-        phone, 
-        paid: false,
-        order: { cards: [], created_at: new Date() }
-      };
-  
-      const entry = await Database.insertOne(user);
-
-      res.status(200).json({ success: entry.acknowledged });
-    }
-
-    res.status(401).json({ success: false });
-
-  }
-  catch (error) {
-    res.status(500).json({ success: false });
-  }
-}
-
+require('dotenv').config();
 
 //----------------------------------
 
-export async function login (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) 
-{
-  try {
+// export async function login (req: Request<Record<string, never>, unknown, UnAuthenticatedRequest>, res: Response) 
+// {
+//   try {
 
-    const account = await Database.findOne({ email: req.body.email }, 1);
+//     const account = await Database.findOne({ email: req.body.email }, 1);
 
-    if (account) 
-    {
-      const passwordIsValid = await argon2.verify(account.password, req.body.password);
+//     if (account) 
+//     {
+//       const passwordIsValid = await argon2.verify(account.password, req.body.password);
       
-      if (!passwordIsValid) 
-        return res.status(401).json({ error: 'Invalid email or password.' });
+//       if (!passwordIsValid) 
+//         return res.status(401).json({ error: 'Invalid email or password.' });
 
-      jwt.sign({ _id: account._id }, process.env.JWT_SECRET as string, (err: Error | null, webtoken: string | undefined) => {
+//       jwt.sign({ _id: account._id }, process.env.JWT_SECRET as string, (err: Error | null, webtoken: string | undefined) => {
 
-        if (err)
-          res.status(500).json({ message: err });
+//         if (err)
+//           res.status(500).json({ message: err });
 
-        else {
-            res.json({ webtoken });
-            console.log('Account', account.username, account._id, 'logged in.');
-        }
-        res.status(200).json({ success: true });
-      });
-    }
-    else
-      res.status(401).json({ success: false });
-  }
-  catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-}
+//         else {
+//             res.json({ webtoken });
+//             console.log('Account', account.username, account._id, 'logged in.');
+//         }
+//         res.status(200).json({ success: true });
+//       });
+//     }
+//     else
+//       res.status(401).json({ success: false });
+//   }
+//   catch (error) {
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// }
 
 
 //----------------------------------------------------
@@ -87,7 +53,7 @@ export async function logout (_req: Request, res: Response)
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax'
     });
-    return res.status(200).json({ message: 'Logged out successfully.' });
+    res.redirect(302, process.env.WEB_URL as string);
   }
   catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -99,47 +65,46 @@ export async function logout (_req: Request, res: Response)
 
 export async function submitOrder (req: AuthenticatedRequest, res: Response)  
 {
-  try {
+  const order = req.body.order as Order;
 
-    jwt.verify(req.body.webtoken, process.env.JWT_SECRET as string, async (err: VerifyErrors | null, authData: unknown) => { 
+  console.log('incoming order: ', order);
 
-      if (err || !authData) {
-        console.log(`jwt.verify() failed: ${ err }`); 
-        res.json({ error: 'Access denied!' });
-        return;
-      }
+  try 
+  {                  
+    if (!order.cards.length)
+      res.status(200).json({ success: false });
+    else 
+    {
+      const _id = req._id; 
 
-      const data = authData as UserJwtPayload;
-      const _id = data._id;
-      const account = await Database.findOneAndUpdate({ _id }, { _id, order: req.body.order }, 0, 1);
+      const account = await Database.findOneAndUpdate({ _id }, { _id, order }, 0, 1);
 
       if (account)
       {
-        sendNotification(account, 'submit order')
-          .then(email => console.log('email sent: ', email))
-          .catch(console.error);
+        //todo: handle submitting order
 
-        res.status(200).json({ success: true });
+        sendNotification(account, 'submit order');
+
+        console.log(`order submitted. email sent to: ${ account.email }. SMS send to ${ account.phone }`);
+
+        res.redirect(302, `${ process.env.WEB_URL as string }/purchase-submitted`);
       }
-      
-    });
-
+    }
   }
   catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
-
 }
 
 
 //-----------------------------------------------
 
 
-export async function checkout (req: Request, res: Response) 
+export async function checkout (req: AuthenticatedRequest, res: Response) 
 { 
   try {
 
-    const account = await Database.findOne({ _id: req.body.id }, 0, 1);
+    const account = await Database.findOne({ _id: req._id }, 0, 1);
 
     if (account)
     {
@@ -153,6 +118,8 @@ export async function checkout (req: Request, res: Response)
 
       const price = 100; //one dollar placeholder
 
+      const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY as string, { apiVersion: '2026-08-26.dahlia' });
+
       const stripeSession = await stripe.checkout.sessions.create({
           payment_method_types: ['card'],
           mode: 'payment',
@@ -160,14 +127,12 @@ export async function checkout (req: Request, res: Response)
           cancel_url: window.location.origin,
           line_items: [
             {
-                price_data: { 
-                    currency: 'usd',
-                    product_data: {
-                    name: 'loregraded',
-                    },
-                    unit_amount: price,
-                },
-                quantity: 1,
+              price_data: { 
+                  currency: 'usd',
+                  product_data: { name: 'loregraded' },
+                  unit_amount: price,
+              },
+              quantity: 1
             }
           ],
           metadata

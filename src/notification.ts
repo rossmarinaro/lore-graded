@@ -21,8 +21,8 @@ export async function sendNotification(account: User, contextType: string, data?
             port: 587,
             secure: false, // true for 465, false for other ports
             auth: {
-                user: process.env.SMTP_EMAIL, // proxy email
-                pass: process.env.NODE_MAILER, // smtp key
+                user: process.env.SMTP_USER, // proxy email
+                pass: process.env.SMTP_PASS, // smtp key
             },
             tls: { rejectUnauthorized: false } 
         }); 
@@ -46,7 +46,7 @@ export async function sendNotification(account: User, contextType: string, data?
         //send mail with defined transport object
     
         const email = {
-            from: `"LOREGRADED" <${ process.env.SMTP_EMAIL }>`, // sender address
+            from: `"LOREGRADED" <${ process.env.SMTP_USER }>`, // sender address
             to: account.email, 
             subject, // Subject line
             html,  //html to be sent,

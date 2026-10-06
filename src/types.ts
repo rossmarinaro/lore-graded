@@ -1,6 +1,12 @@
 import { Request } from 'express'
 import jwt from 'jsonwebtoken'
 
+export interface MongoDBOptions {
+    maxPoolSize: number;
+    minPoolSize: number;
+    maxIdleTimeMS: number;
+} 
+
 export interface Order {
   cards: string[]
   created_at: Date
