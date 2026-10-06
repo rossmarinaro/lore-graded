@@ -1,1 +1,1 @@
-rm -rf dist && git add . && git commit -am 'update' && git push -f origin master
+git checkout master && rm -rf dist && git add . && git commit -am 'update' && git push -f origin master
