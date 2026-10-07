@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 //import path from 'path'
-import { express, app, PORT, rateLimiter } from './config/express'
+import { express, app, PORT, rateLimiter } from './express'
 import { endpointRouter } from './endpoints';
 import { Database } from './database';
 import cookieParser from 'cookie-parser';

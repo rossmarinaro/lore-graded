@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express'
-import { Database } from '../database'
+import { Database } from './database'
 import { ObjectId } from 'mongodb'
 
 const app = express();

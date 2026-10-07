@@ -18,7 +18,6 @@ const oAuth2Client = new OAuth2Client(
 export async function authenticate (_req: Request, res: Response) 
 {
     try {
-
         const scope = ['openid', 'profile', 'email'];
 
         const authorizeUrl = oAuth2Client.generateAuthUrl({
@@ -44,7 +43,7 @@ export async function authenticatedCallback (req: Request, res: Response)
         const { error, code } = req.query;
 
         if (error || !code) 
-            return res.status(401).json({ success: false });
+            return res.status(401).send('Auth handshake failed.');
         
         try {
 
@@ -75,7 +74,7 @@ export async function authenticatedCallback (req: Request, res: Response)
             });
             
             if (process.env.NODE_ENV === 'development')
-                console.log('authenticated token: ', appToken)
+                console.log('Authenticated token: ', appToken)
             
             res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
 
