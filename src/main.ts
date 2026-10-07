@@ -7,10 +7,10 @@ export function main()
     const rule = '45 19 * * 0'; 
 
     const job = schedule.scheduleJob('sunday-drop-cron', rule, () => {
-        console.log(`scheduled job ${ job.name } completed.`);
+        console.log(`Scheduled job: ${ job.name } completed.`);
         //todo: logic to accumulate selected users to notify for payment.
         //sendTargetedEmails();
     });
 
-    console.log(`scheduled job ${ job.name } initiated.`);
+    console.log(`Scheduled job: ${ job.name } initiated.`);
 }

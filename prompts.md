@@ -45,7 +45,7 @@ login button:
 Create a login button and style it like the language buttons. Position it top left above the LORE logo.
 
 Requirements:
-1. When clicked, it should make a GET fetch request to 'https://lore-graded.com/api/auth/google'.
+1. When clicked, it should make a GET fetch request to 'https://lore-graded.onrender.com/api/auth/google'.
 2. The backend will return a redirect URL (the Google OAuth consent screen) or a JSON payload containing the auth URL. Handle both cases:
    - If the API returns a direct redirect/HTML, ensure it navigates the browser window to that destination.
    - If it returns JSON (e.g., `{ url: "..." }`), catch the URL and update `window.location.href`.
@@ -56,7 +56,7 @@ Requirements:
 submit button:
 
 
-Create a function to handle submitting an order to 'https://lore-graded.onrender.com/submit-order'.
+Create a function to handle submitting an order to 'https://lore-graded.onrender.com/api/submit-order'.
 It should trigger when the user submits their selection of up to ten cards.
 
 Requirements:
