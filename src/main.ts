@@ -1,0 +1,15 @@
+import schedule from 'node-schedule';
+
+export function main() 
+{
+    // 3. Schedule for Sunday at 7:45 PM (15 minutes before 8:00 PM)
+    // Cron format: minute hour day-of-month month day-of-week
+    const rule = '45 19 * * 0'; 
+
+    const job = schedule.scheduleJob(rule, function() {
+        //todo: logic to accumulate selected users to notify for payment.
+        //sendTargetedEmails();
+    });
+
+    console.log('scheduled job (countdown): ', job);
+}

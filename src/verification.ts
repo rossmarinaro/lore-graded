@@ -13,6 +13,34 @@ const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_REDIRECT_URI
 );
 
+
+//----------------------------------------------
+
+
+function getToken (req: AuthenticatedRequest): string | null
+{
+    //mobile token
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+        const token = req.headers.authorization.split(' ')[1];
+        console.log(token ? 'Retrieving token...' : 'No token present in header.');
+        return token ?? null;
+    }
+
+    //fallback to cookies (web)
+
+    else if (req.cookies && req.cookies.token)  {
+        console.log('Retrieving cookies...');
+        return req.cookies.token;
+    }
+
+    else {
+        console.log('No token present.');
+        return null;
+    }
+}
+
+
 //---------------------------------------- 1. Redirect users to Google for login
 
 export async function authenticate (_req: Request, res: Response) 
@@ -113,33 +141,6 @@ export async function verifyAuth(req: AuthenticatedRequest, res: Response, next:
     catch (err) {
         console.log(err);
         return res.status(403).send('Invalid or expired token.');
-    }
-}
-
-
-//----------------------------------------------
-
-
-function getToken (req: AuthenticatedRequest): string | null
-{
-    //mobile token
-
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-        const token = req.headers.authorization.split(' ')[1];
-        console.log(token ? 'Retrieving token...' : 'No token present in header.');
-        return token ?? null;
-    }
-
-    //fallback to cookies (web)
-
-    else if (req.cookies && req.cookies.token)  {
-        console.log('Retrieving cookies...');
-        return req.cookies.token;
-    }
-
-    else {
-        console.log('No token present.');
-        return null;
     }
 }
 

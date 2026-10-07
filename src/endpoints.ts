@@ -9,9 +9,9 @@ import {
 
 export const endpointRouter = express.Router();
 
-endpointRouter.post('/logout', logout);
 endpointRouter.get('/auth/google', authenticate);
 endpointRouter.get('/auth/google/callback', authenticatedCallback);
+endpointRouter.post('/logout', logout);
 endpointRouter.post('/submit-order', verifyAuth, submitOrder);
 endpointRouter.post('/checkout', verifyAuth, checkout);
 endpointRouter.post('/webhooks', webhook);
