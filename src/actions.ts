@@ -1,8 +1,10 @@
+import Stripe from 'stripe';
+
 import { Database } from './database'
 import { Request, Response } from 'express'
 import { AuthenticatedRequest, Order, User} from './types'
 import { sendNotification } from './notification'
-import Stripe from 'stripe';
+import { getUserID } from './utils';
 
 require('dotenv').config();
 
@@ -67,25 +69,22 @@ export async function submitOrder (req: AuthenticatedRequest, res: Response)
 {
   const order = req.body.order as Order;
 
-  console.log('incoming order: ', order);
+  console.log('Incoming order: ', order);
 
   try 
   {                  
-    if (!order.cards.length)
-      res.status(200).json({ success: false });
-    else 
+   // if (!order.cards.length)
+   //   res.status(400).send('No cards in order.');
+  //  else 
     {
-      const _id = req._id; 
-
-      const account = await Database.findOneAndUpdate({ _id }, { _id, order }, 0, 1);
+      const projection = { email: 1, phone: 1 };
+      const account = await Database.findOneAndUpdate({ _id: getUserID(req._id as string) }, { order }, projection);
 
       if (account)
       {
         //todo: handle submitting order
 
-        sendNotification(account, 'submit order');
-
-        console.log(`order submitted. email sent to: ${ account.email }. SMS send to ${ account.phone }`);
+        sendNotification(account, 'submit');
 
         res.redirect(302, `${ process.env.WEB_URL as string }/purchase-submitted`);
       }
@@ -100,16 +99,17 @@ export async function submitOrder (req: AuthenticatedRequest, res: Response)
 //-----------------------------------------------
 
 
+
 export async function checkout (req: AuthenticatedRequest, res: Response) 
 { 
-  try {
-
-    const account = await Database.findOne({ _id: req._id }, 0, 1);
+  try { 
+    
+    const projection = { email: 1, phone: 1 };
+    const account = await Database.findOne({ _id: getUserID(req.body._id) }, projection);
 
     if (account)
     {
       const metadata = {
-        _id: account._id,
         username: account.username ?? null,
         email: account.email ?? null,
         phone: account.phone ?? null,
@@ -123,8 +123,8 @@ export async function checkout (req: AuthenticatedRequest, res: Response)
       const stripeSession = await stripe.checkout.sessions.create({
           payment_method_types: ['card'],
           mode: 'payment',
-          success_url: window.location.origin, 
-          cancel_url: window.location.origin,
+          success_url: `${ process.env.WEB_URL }/checkout-success`, 
+          cancel_url: process.env.WEB_URL,
           line_items: [
             {
               price_data: { 
@@ -172,17 +172,16 @@ export async function webhook (req: Request, res: Response)
       case 'checkout.session.completed':
 
         const _id = webhookSession._id;
-        const account = await Database.findOneAndUpdate({ _id }, { _id, paid: true }, 0, 1);
+        const projection = { email: 1 };
+        const account = await Database.findOneAndUpdate({ _id }, projection, { paid: true });
 
         if (account)
         {
-          console.log(`user paid. user: ${ account.username }`);
+          console.log(`user paid. user: ${ account.email }`);
             
           //send confirmation email / SMS
 
-          sendNotification(webhookSession, 'purchase complete')
-              .then(email => console.log('email sent: ', email))
-              .catch(console.error);
+          sendNotification(webhookSession, 'purchase.complete');
         }
 
       break;

@@ -1,5 +1,5 @@
 import { InsertOneResult, MongoClient, WithId } from 'mongodb'
-import { BinaryChoice, User, MongoDBOptions } from './types'
+import { User, MongoDBOptions } from './types'
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
@@ -44,8 +44,8 @@ export class Database {
         }
     }
 
-    public static async findOne(options: Object, email: BinaryChoice = 0, _id: BinaryChoice = 0): Promise<WithId<User> | null> {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).findOne(options, { projection: { email, _id }});
+    public static async findOne(options: Object, projection = {}): Promise<WithId<User> | null> {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).findOne(options, { projection });
         return user;
     }
 
@@ -54,14 +54,14 @@ export class Database {
         return cluster;
     }
 
-    public static async findOneAndUpdate(queryParams: Object, updateParams: Object, email: BinaryChoice = 0, _id: BinaryChoice = 0, upsert = false): Promise<WithId<User> | null> {
+    public static async findOneAndUpdate(queryParams: Object, updateParams: Object, projection = {}, upsert = false): Promise<WithId<User> | null> {
         const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string)
         .findOneAndUpdate(
             queryParams, 
             { $set: updateParams },   
             { 
                 returnDocument: 'after', 
-                projection: { email, _id }, 
+                projection, 
                 upsert 
             }
         );

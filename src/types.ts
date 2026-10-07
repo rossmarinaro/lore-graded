@@ -7,9 +7,19 @@ export interface MongoDBOptions {
     maxIdleTimeMS: number;
 } 
 
+export interface Card {
+  serial_number: string;
+  type: string;
+};
+
+export interface PhysicalCard extends Card {
+  grade: number;
+};
+
 export interface Order {
-  cards: string[]
-  created_at: Date
+  type: string;
+  cards: PhysicalCard[];
+  created_at: Date;
 };
 
 interface Account {
@@ -29,11 +39,11 @@ export type AuthenticatedRequest = Request & {
 export type User = Account & {
   _id: string;
   paid: boolean;
-  order: Order 
+  order: Order;
 };
-
-export type BinaryChoice = 0 | 1;
 
 export interface UserJwtPayload extends jwt.JwtPayload {
   _id: string;
 }
+
+export type EmailContextType = 'submit' | 'purchase.complete';

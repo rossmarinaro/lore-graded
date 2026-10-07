@@ -1,11 +1,11 @@
-import twilio from 'twilio';
+//import twilio from 'twilio';
 import nodemailer from 'nodemailer';
-import { User } from './types';
+import { EmailContextType, User } from './types';
 
 
 //send confirmation email / SMS
 
-export async function sendNotification(account: User, contextType: string, data?: string) 
+export async function sendNotification(account: User, contextType: EmailContextType /* , data?: string */) 
 {
     try {
 
@@ -14,7 +14,7 @@ export async function sendNotification(account: User, contextType: string, data?
         /********************* EMAIL */ 
 
         let subject, html;
-        const attachments = [];
+        //const attachments = [];
     
         const transporter = nodemailer.createTransport ({
             host: process.env.SMTP_HOST,
@@ -29,17 +29,23 @@ export async function sendNotification(account: User, contextType: string, data?
 
         switch (contextType)
         {
-            case 'purchase complete':
+            case 'submit':
     
                 subject = 'Purchase Complete';
-                html = `<b><p>${ messageBody }</p></b>`;
-
-                if (data?.length) 
-                    attachments.push({ filename: 'log.txt', content: data });
+                html = `<img src="${ process.env.API_URL }/logo.png" alt="Company Logo" width="200" height="100">
+                    <b><p>${ messageBody }</p></b>`;
+    
+            break;
+            case 'purchase.complete':
+    
+                subject = 'Purchase Complete';
+                html = `<img src="${ process.env.API_URL }/logo.png" alt="Company Logo" width="200" height="100">
+                    <b><p>${ messageBody }</p></b>`;
     
             break;
             default: {
-                console.log('cannot send email or SMS - contextType not defined.');
+                console.log('cannot send email or SMS - context not found.');
+                return;
             } 
         }
     
@@ -48,26 +54,26 @@ export async function sendNotification(account: User, contextType: string, data?
         const email = {
             from: `"LOREGRADED" <${ process.env.SMTP_USER }>`, // sender address
             to: account.email, 
-            subject, // Subject line
-            html,  //html to be sent,
-            attachments
+            subject, 
+            html,  
+            //attachments
         },
         
         info = await transporter.sendMail(email);
     
-        console.log('email sent: ', info.messageId);
+        console.log('email sent to: ', info.envelope.to);
 
         /********************* SMS */ 
 
-        const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        // const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-        const SMS = await twilioClient.messages.create({
-            body: messageBody,
-            from: process.env.TWILIO_PHONE_NUMBER, 
-            to: `+${ account.phone }`//'+1234567890' 
-        });
+        // const SMS = await twilioClient.messages.create({
+        //     body: messageBody,
+        //     from: process.env.TWILIO_PHONE_NUMBER, 
+        //     to: `+${ account.phone }`//'+1234567890' 
+        // });
         
-        console.log('SMS sent:', SMS.sid);
+        // console.log('SMS sent:', SMS.sid);
     }
 
     catch(err) { 

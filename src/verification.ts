@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { Database } from './database'
 import { AuthenticatedRequest, UserJwtPayload } from './types'
 import { OAuth2Client } from 'google-auth-library'
+import { getUserID } from './utils'
 
 require('dotenv').config();
 
@@ -55,7 +56,7 @@ export async function authenticatedCallback (req: Request, res: Response)
             if (!payload || !payload.email) 
                 throw new Error('Invalid token payload');
             
-            const user = await Database.findOneAndUpdate({ email: payload?.email }, {}, 1, 1, true); 
+            const user = await Database.findOneAndUpdate({ email: payload?.email }, {}, true); 
 
             // 2. Generate your own custom JWT app token (expires in 1 day)
             const appToken = jwt.sign(
@@ -100,16 +101,18 @@ export async function verifyAuth(req: AuthenticatedRequest, res: Response, next:
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserJwtPayload,
-              account = await Database.findOne({ _id: decoded.userId });
+              account = await Database.findOne({ _id: getUserID(decoded.userId )});
                     
         if (account)
             req._id = account._id;
+        else 
+            return res.status(403).send('No account found to authorize.');
 
         next();
     } 
     catch (err) {
         console.log(err);
-        return res.status(403).json({ error: 'Invalid or expired token.' });
+        return res.status(403).send('Invalid or expired token.');
     }
 }
 
