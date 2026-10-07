@@ -1,27 +1,24 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "lore-graded",
-  "main": "expo-router/entry",
+  "description": "lore-graded-api",
+  "main": "index.js",
   "scripts": {
-    "dev": "npx tsx watch src/index.ts",
     "build": "npx tsc",
-    "start": "node dist/index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.6",
-    "argon2": "^0.45.1",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "dotenv": "^18.0.4",
     "express": "^5.2.1",
     "google-auth-library": "^11.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.7.0",
     "nodemailer": "^10.0.13",
-    "react-native-webview": "^14.0.1",
     "stripe": "^22.6.2",
     "twilio": "^6.1.2"
   },

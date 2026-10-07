@@ -55,7 +55,8 @@ export async function authenticatedCallback (req: Request, res: Response)
             if (!payload || !payload.email) 
                 throw new Error('Invalid token payload');
             
-            const user = await Database.findOneAndUpdate({ email: payload?.email }, {}, true); 
+            const projection = { email: 1 };
+            const user = await Database.findOneAndUpdate({ email: payload?.email }, {}, projection, true); 
 
             // 2. Generate your own custom JWT app token (expires in 1 day)
             const appToken = jwt.sign(
