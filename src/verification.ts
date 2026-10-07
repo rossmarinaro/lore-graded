@@ -120,13 +120,15 @@ export async function verifyAuth(req: AuthenticatedRequest, res: Response, next:
 //----------------------------------------------
 
 
-function getToken (req: AuthenticatedRequest) 
+function getToken (req: AuthenticatedRequest): string | null
 {
     //mobile token
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) 
-        return req.headers.authorization.split(' ')[1];
-    
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+        const token = req.headers.authorization.split(' ')[1];
+        return token ?? null;
+    }
+
     //fallback to cookies (web)
 
     else if (req.cookies && req.cookies.token) 

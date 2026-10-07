@@ -58,7 +58,8 @@ export async function logout (_req: Request, res: Response)
     res.redirect(302, process.env.WEB_URL as string);
   }
   catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('logout::Error: ', error);
+    res.status(500).send('Internal Server Error');
   }
 }
 
@@ -91,7 +92,8 @@ export async function submitOrder (req: AuthenticatedRequest, res: Response)
     }
   }
   catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('submitOrder::Error: ', error);
+    res.status(500).send('Internal Server Error');
   }
 }
 
@@ -128,9 +130,9 @@ export async function checkout (req: AuthenticatedRequest, res: Response)
           line_items: [
             {
               price_data: { 
-                  currency: 'usd',
-                  product_data: { name: 'loregraded' },
-                  unit_amount: price,
+                currency: 'usd',
+                product_data: { name: 'loregraded' },
+                unit_amount: price,
               },
               quantity: 1
             }
@@ -139,25 +141,24 @@ export async function checkout (req: AuthenticatedRequest, res: Response)
       });
 
       console.log( 
-          'Checkout Success Link Generated: ', stripeSession.url, 
-          '\nTotal: ', price, 
-          '\nMetadata: ', JSON.stringify(account)
+        'Checkout Success Link Generated: ', stripeSession.url, 
+        '\nTotal: ', price, 
+        '\nMetadata: ', JSON.stringify(account)
       );
         
-      res.status(200).json({ url: stripeSession.url });
+      res.status(200).send(stripeSession.url);
     }
     else 
-      res.status(401).json({ error: 'Please create an account before checking out.' });
+      res.status(401).send('Please create an account before checking out.');
   } 
   catch (error) {
-    console.error('Stripe error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('checkout::Error: ', error);
+    res.status(500).send('Internal Server Error');
   }
 }
 
 
 //----------------------------------
-
 
 
 export async function webhook (req: Request, res: Response) 
@@ -177,7 +178,7 @@ export async function webhook (req: Request, res: Response)
 
         if (account)
         {
-          console.log(`user paid. user: ${ account.email }`);
+          console.log(`user: ${ account.email } paid. Sending notification.`);
             
           //send confirmation email / SMS
 
@@ -191,8 +192,8 @@ export async function webhook (req: Request, res: Response)
     }
   }
 
-  catch(err) {
-    console.log(`There was a problem processing webhook: ${ err }`);
+  catch(error) {
+    console.error('webhook::Error: ', error);
   }
 
   res.json({ received: true });
