@@ -6,10 +6,11 @@ export function main()
     // Cron format: minute hour day-of-month month day-of-week
     const rule = '45 19 * * 0'; 
 
-    const job = schedule.scheduleJob(rule, function() {
+    const job = schedule.scheduleJob(rule, () => {
+        console.log(`scheduled job ${ job.name } completed.`);
         //todo: logic to accumulate selected users to notify for payment.
         //sendTargetedEmails();
     });
 
-    console.log('scheduled job (countdown): ', job);
+    console.log(`scheduled job ${ job.name } initiated.`);
 }
