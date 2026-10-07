@@ -18,15 +18,21 @@ export interface PhysicalCard extends Card {
 
 export interface Order {
   type: string;
-  cards: PhysicalCard[];
+  cards: Card[];
   created_at: Date;
+  recipient: string; 
+  street_address: string;
+  apartment: string;
+  city: string;
+  zip: string;
+  state: string;
+  country: string;
 };
 
 interface Account {
   email: string;
   password: string;
-  username: string; 
-  phone: number;
+  phone: string;
 };
 
 export type UnAuthenticatedRequest = Request & Account;

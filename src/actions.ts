@@ -107,12 +107,12 @@ export async function checkout (req: AuthenticatedRequest, res: Response)
   try { 
     
     const projection = { email: 1, phone: 1 };
-    const account = await Database.findOne({ _id: getUserID(req.body._id) }, projection);
+    const account = await Database.findOne({ _id: getUserID(req._id as string) }, projection);
 
     if (account)
     {
       const metadata = {
-        username: account.username ?? null,
+        recipient: req.body.recipient ?? null,
         email: account.email ?? null,
         phone: account.phone ?? null,
         paid: String(account.paid)

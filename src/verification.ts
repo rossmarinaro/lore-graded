@@ -74,7 +74,7 @@ export async function authenticatedCallback (req: Request, res: Response)
                 //domain: '.loregraded.com', 
             });
             
-            if (process.env.NODE_ENV === 'development')
+            if (process.env.NODE_ENV !== 'production')
                 console.log('Authenticated token: ', appToken)
             
             res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
@@ -94,10 +94,10 @@ export async function authenticatedCallback (req: Request, res: Response)
 
 export async function verifyAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) 
 {
-    const token = getToken(req);
+    const token = getToken(req); 
 
     if (!token) 
-        return res.status(401).json({ error: 'Access denied. No token provided.' });
+        return res.status(401).send('Access denied. No token provided.');
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserJwtPayload,
@@ -126,16 +126,21 @@ function getToken (req: AuthenticatedRequest): string | null
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
         const token = req.headers.authorization.split(' ')[1];
+        console.log(token ? 'Retrieving token...' : 'No token present in header.');
         return token ?? null;
     }
 
     //fallback to cookies (web)
 
-    else if (req.cookies && req.cookies.token) 
+    else if (req.cookies && req.cookies.token)  {
+        console.log('Retrieving cookies...');
         return req.cookies.token;
+    }
 
-    else 
+    else {
+        console.log('No token present.');
         return null;
+    }
 }
 
 
