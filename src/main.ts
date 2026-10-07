@@ -6,7 +6,7 @@ export function main()
     // Cron format: minute hour day-of-month month day-of-week
     const rule = '45 19 * * 0'; 
 
-    const job = schedule.scheduleJob(rule, () => {
+    const job = schedule.scheduleJob('sunday-drop-cron', rule, () => {
         console.log(`scheduled job ${ job.name } completed.`);
         //todo: logic to accumulate selected users to notify for payment.
         //sendTargetedEmails();
