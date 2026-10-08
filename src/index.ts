@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: [ process.env.WEB_URL as string, process.env.API_URL as string], credentials: true }));
 app.use('./app/', rateLimiter);
-app.use('/api', endpointRouter);
+app.use('/api2', endpointRouter);
 
 //serve files
 //app.use(express.static(path.join(__dirname, '../test')));
