@@ -1,11 +1,12 @@
-import { Request, Response, NextFunction } from 'express'
+require('dotenv').config();
+
 import jwt from 'jsonwebtoken'
+
+import { Request, Response, NextFunction } from 'express'
 import { Database } from './database'
 import { AuthenticatedRequest, UserJwtPayload } from './types'
 import { OAuth2Client } from 'google-auth-library'
 import { getUserID } from './utils'
-
-require('dotenv').config();
 
 const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
@@ -34,8 +35,10 @@ function getToken (req: AuthenticatedRequest): string | null
         return req.cookies.token;
     }
 
+    //none
+
     else {
-        console.log('No token present.');
+        console.log('No token or cookies present.');
         return null;
     }
 }
@@ -48,24 +51,25 @@ export async function authenticate (_req: Request, res: Response)
     try {
         const scope = ['openid', 'profile', 'email'];
 
-        const authorizeUrl = oAuth2Client.generateAuthUrl({
+        const googleAuthUrl = oAuth2Client.generateAuthUrl({
             access_type: 'offline', // Generates a refresh token for extended access
             prompt: 'consent',     // Forces refresh token generation on re-auth
             scope,
             include_granted_scopes: true
         });
 
-        res.redirect(302, authorizeUrl);
+        res.redirect(302, googleAuthUrl);
     }
-    catch(err) {
-        console.log(err);
+    catch(error) {
+        console.error('authenticate::Error: ', error);
+        res.status(500).send('Authentication failed.');
     }
 }
 
 
 //---------------------------------------- 1. Redirect users to Google for login
 
-export async function authenticatedCallback (req: Request, res: Response) 
+export async function authenticatedCallback(req: Request, res: Response) 
 {
     try {
         const { error, code } = req.query;
@@ -77,14 +81,20 @@ export async function authenticatedCallback (req: Request, res: Response)
 
             const { tokens } = await oAuth2Client.getToken(code as string);
             const ticket = await oAuth2Client.verifyIdToken({ idToken: tokens.id_token as string, audience: process.env.GOOGLE_CLIENT_ID });
-
             const payload = ticket.getPayload();
             
             if (!payload || !payload.email) 
                 throw new Error('Invalid token payload');
             
             const projection = { email: 1 };
-            const user = await Database.findOneAndUpdate({ email: payload?.email }, {}, projection, true); 
+            
+            const user = await Database.findOneAndUpdate(
+                process.env.MONGODB_COLLECTION as string,
+                { email: payload?.email }, 
+                {}, 
+                projection, 
+                true
+            ); 
 
             // 2. Generate your own custom JWT app token (expires in 1 day)
             const appToken = jwt.sign(
@@ -99,20 +109,22 @@ export async function authenticatedCallback (req: Request, res: Response)
                 secure: process.env.NODE_ENV === 'production', // Requires HTTPS in production
                 sameSite: 'lax'/* 'strict' */, /* 'none' */ // Prevents CSRF attacks  / 'lax' works perfectly if they share a root domain
                 maxAge: 24 * 60 * 60 * 1000, // 1 day
+                domain: 'loregraded.com'
                 //domain: '.loregraded.com', 
             });
             
             if (process.env.NODE_ENV !== 'production')
-                console.log('Authenticated token: ', appToken)
+                console.log('Authenticated token: ', appToken);
             
             res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
-
-        } catch (error) {
-            res.status(500).send('Authentication failed.');
+        } 
+        catch (error) {
+            res.status(403).send('Authentication failed.');
         }
     }  
-    catch(err) {   
-        console.log(err);
+    catch(error) {   
+        console.error('authenticatedCallback::Error: ', error);
+        res.status(500).send('Authentication failed.');
     }
 }
 
@@ -129,7 +141,7 @@ export async function verifyAuth(req: AuthenticatedRequest, res: Response, next:
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserJwtPayload,
-              account = await Database.findOne({ _id: getUserID(decoded.userId )});
+              account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded.userId )});
                     
         if (account)
             req._id = account._id;
@@ -138,22 +150,8 @@ export async function verifyAuth(req: AuthenticatedRequest, res: Response, next:
 
         next();
     } 
-    catch (err) {
-        console.log(err);
+    catch (error) {
+        console.error('verifyAuth::Error: ', error);
         return res.status(403).send('Invalid or expired token.');
     }
 }
-
-
-// export async function encryptPassword(password: string): Promise<string | null>
-// {
-//     try {
-//         const passwordHash = await argon2.hash(password); 
-//         return passwordHash;
-//     }
-
-//     catch(error) {
-//         console.log(`Error encrypting password: ${ password }`, error);
-//         return null;
-//     }
-// }

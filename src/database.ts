@@ -40,23 +40,23 @@ export class Database {
             await this.client.db(process.env.MONGODB_DATABASE).collection('temp').createIndex({ resetAt: 1 }, { expireAfterSeconds: 0 });
         }
         catch (error) {
-            console.log(`connection to database failed: ${ error }`);
+            console.error('connection to database failed: ', error);
         }
     }
 
-    public static async findOne(options: Object, projection = {}): Promise<WithId<User> | null> {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).findOne(options, { projection });
+    public static async findOne(collection: string, options: Object, projection = {}): Promise<WithId<User> | null> {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(collection).findOne(options, { projection });
         return user;
     }
 
-    public static async findAll(limit = -1, options: User): Promise<WithId<User>[]> {
-        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).find(options).limit(limit).toArray();
+    public static async findAll(collection: string, limit = -1, options: User): Promise<WithId<User>[]> {
+        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(collection).find(options).limit(limit).toArray();
         return cluster;
     }
 
-    public static async findOneAndUpdate(queryParams: Object, updateParams: Object, projection = {}, upsert = false): Promise<WithId<User> | null> {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string)
-        .findOneAndUpdate(
+    public static async findOneAndUpdate(collection: string, queryParams: Object, updateParams: Object, projection = {}, upsert = false): Promise<WithId<User> | null> 
+    {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(collection).findOneAndUpdate(
             queryParams, 
             { $set: updateParams },   
             { 
@@ -65,7 +65,6 @@ export class Database {
                 upsert 
             }
         );
-
         return user;
     }
 

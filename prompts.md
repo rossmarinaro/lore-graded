@@ -26,8 +26,8 @@ code to paste:
 export default {
 async fetch(request) {
 const url = new URL(request.url);
-// Check if path starts with /api
-if (url.pathname.startsWith('/api')) {
+// Check if path starts with /api2
+if (url.pathname.startsWith('/api2')) {
 // Forward to Render microservice (stripping or keeping /api depending on backend routes)
 const backendUrl = request.url.replace('https://loregraded.com', 'https://lore-graded.onrender.com');
 return fetch(new Request(backendUrl, request));
@@ -39,24 +39,10 @@ return fetch(request);
 
 
 
-login button:
-
-
-Create a login button and style it like the language buttons. Position it top left above the LORE logo.
-
-Requirements:
-1. When clicked, it should make a GET fetch request to 'https://lore-graded.onrender.com/api/auth/google'.
-2. The backend will return a redirect URL (the Google OAuth consent screen) or a JSON payload containing the auth URL. Handle both cases:
-   - If the API returns a direct redirect/HTML, ensure it navigates the browser window to that destination.
-   - If it returns JSON (e.g., `{ url: "..." }`), catch the URL and update `window.location.href`.
-3. Account for credentials/cookies: Ensure `credentials: 'include'` is set on the fetch request so that any existing session context or incoming authentication cookies are handled correctly across domains.
-
-
-
 submit button:
 
 
-Create a function to handle submitting an order to 'https://lore-graded.onrender.com/api/submit-order'.
+Create a function to handle submitting an order to 'https://lore-graded.onrender.com/api2/submit-order'.
 It should trigger when the user submits their selection of up to ten cards.
 
 Requirements:
@@ -77,11 +63,67 @@ Requirements:
 3. Payload Handling: Ensure the payload is correctly stringified with 'Content-Type': 'application/json' headers. Do not pass raw objects or let `req.body.order` serialize into an unparsed string format.
 4. Error Handling: Handle standard response statuses (e.g., 200/201 success, 401/403 access denied if the token cookie is missing or invalid, and 400/500 backend errors). Show appropriate UI feedback states (loading, success, error messages).
 
+Tell me: is order submission already implemented with data structures in sql? if so, tell me those properties. 
+If so, show the best way to sync this data to the alt backend at "/api2" which runs Mongodb.
 
 
 
 
 
+// frontend/src/services/syncService.ts
+
+interface SQLUserRow {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  created_at: string;
+}
+
+export async function fetchAndSyncData() {
+  try {
+    // 1. Query raw data from Drizzle SQL via Proxy
+    // Note: Use credentials 'include' if your proxy endpoints are protected by HTTP cookies
+    const sqlResponse = await fetch('/api/v1/sql/users', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    if (!sqlResponse.ok) throw new Error('Failed to fetch from SQL database');
+    const sqlUsers: SQLUserRow[] = await sqlResponse.json();
+
+    if (sqlUsers.length === 0) return { message: "No data to sync" };
+
+    // 2. Map SQL columns into a Document Structure for MongoDB
+    const mappedDocuments = sqlUsers.map(user => ({
+      metadata: {
+        sqlId: user.id,
+        source: 'drizzle_migration'
+      },
+      profile: {
+        fullName: `${user.first_name} ${user.last_name}`,
+        email: user.email.toLowerCase()
+      },
+      syncedAt: new Date().toISOString()
+    }));
+
+    // 3. Post mapped payloads to the MongoDB Render Web Service
+    const mongoResponse = await fetch('/api2/sync-users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ documents: mappedDocuments })
+    });
+
+    if (!mongoResponse.ok) throw new Error('Failed to save to MongoDB microservice');
+    
+    const status = await mongoResponse.json();
+    return { success: true, status };
+
+  } catch (error) {
+    console.error('Data pipeline error:', error);
+    return { success: false, error };
+  }
+}
 
 
 

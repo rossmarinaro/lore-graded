@@ -2,9 +2,9 @@ import { Request } from 'express'
 import jwt from 'jsonwebtoken'
 
 export interface MongoDBOptions {
-    maxPoolSize: number;
-    minPoolSize: number;
-    maxIdleTimeMS: number;
+  maxPoolSize: number;
+  minPoolSize: number;
+  maxIdleTimeMS: number;
 } 
 
 export interface Card {
@@ -41,6 +41,18 @@ export type AuthenticatedRequest = Request & {
   token?: string;
   _id?: string;
 };
+
+export interface SyncRequestBody {
+  collection: string;
+  documents: Array<{
+    metadata: {
+      originalSqlId: any;
+      syncedAt: string;
+      inferredIdKey: string;
+    };
+    data: Record<string, any>;
+  }>;
+}
 
 export type User = Account & {
   _id: string;

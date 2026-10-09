@@ -1,11 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { Database } from './database'
 import { ObjectId } from 'mongodb'
 
-const app = express();
-const PORT = process.env.PORT || 3000;
 
-async function rateLimiter(req: Request, res: Response, next: NextFunction) 
+export async function rateLimiter(req: Request, res: Response, next: NextFunction) 
 {
     try {
         const WINDOW_MS = 60 * 1000,
@@ -44,5 +42,3 @@ async function rateLimiter(req: Request, res: Response, next: NextFunction)
         console.log('rate limit error: ', error);
     }
 }
-
-export { express, app, PORT, rateLimiter };
