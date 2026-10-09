@@ -30,14 +30,14 @@ export async function sendNotification(account: User, contextType: EmailContextT
             case 'submit':
     
                 subject = 'Submission Complete';
-                html = `<img src="${ process.env.API_URL }/logo.png" alt="Company Logo" width="200" height="100">
+                html = `<img src="${ process.env.API_URL }/assets/logo.png" alt="Company Logo" width="200" height="100">
                     <b><p>Thank you for your purchase. You will be added to the queue and notified if you've been selected.</p></b>`;
     
             break;
             case 'purchase.complete':
     
                 subject = 'Purchase Complete';
-                html = `<img src="${ process.env.API_URL }/logo.png" alt="Company Logo" width="200" height="100">
+                html = `<img src="${ process.env.API_URL }/assets/logo.png" alt="Company Logo" width="200" height="100">
                     <b>
                         <p>
                             order details:
