@@ -12,20 +12,12 @@ export interface Order {
   time_stamp: Date;
 };
 
-interface Account {
-  email: string;
-  password: string;
-  phone: string;
-};
-
-export type UnAuthenticatedRequest = Request & Account;
-
-export interface CustomRequest extends Request {
-  _id?: string; 
-}
-
 export interface AuthenticatedRequest extends Request {
-  _id: string; 
+    _id?: string;
+    cookies: {
+      token?: string;
+      [key: string]: any;
+    };
 }
 
 export interface SyncRequestBody {
@@ -40,8 +32,11 @@ export interface SyncRequestBody {
   }>;
 }
 
-export type User = Account & {
+export interface Account {
   _id: string;
+  email: string;
+  password: string;
+  phone: string;
   paid: boolean;
   orders: Order[];
 };

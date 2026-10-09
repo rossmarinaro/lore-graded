@@ -1,9 +1,8 @@
-
 require('dotenv').config();
 
 import { Database } from '../database'
 import { Request, Response } from 'express'
-import { AuthenticatedRequest, Order, SyncRequestBody, User} from '../types'
+import { AuthenticatedRequest, Order, SyncRequestBody, Account} from '../types/types'
 import { sendNotification } from '../notification'
 import { getUserID } from '../utils';
 import { AnyBulkWriteOperation } from 'mongodb';
@@ -33,7 +32,7 @@ export async function logout (_req: Request, res: Response)
 //-----------------------------------------------
 
 
-export async function syncUsers(req: AuthenticatedRequest, res: Response)
+export async function syncUsers(req: Request, res: Response)
 { 
   try 
   {
@@ -94,9 +93,15 @@ export async function syncUsers(req: AuthenticatedRequest, res: Response)
 //----------------------------------------------------
 
 
-export async function submitOrderToQueue (req: AuthenticatedRequest, res: Response)  
+export async function submitOrderToQueue (req: Request, res: Response)  
 {
   console.log('submitOrder: ', req.body);
+
+  if (!req._id) {
+    console.error('submitOrderToQueue :: Denied - Unauthorized request or missing ID');
+    res.status(401).send('Unauthorized.');
+    return;
+  }
 
   if (!req.body || !req.body.order_id) {
     console.error('submitOrderToQueue :: Denied - Missing order_id in request body');
@@ -105,32 +110,24 @@ export async function submitOrderToQueue (req: AuthenticatedRequest, res: Respon
 
   try 
   {                  
-   // if (!order.cards.length)
-   //   res.status(400).send('No cards in order.');
-  //  else 
+    const order: Order = { order_id: req.body.order_id, time_stamp: new Date() };
+
+    const projection = { email: 1, phone: 1 };
+
+    const account = await Database.findOneAndUpdate(
+      process.env.MONGODB_COLLECTION as string, 
+      { _id: getUserID(req._id) }, 
+      { order }, 
+      projection
+    );
+
+    if (account)
     {
-      const order: Order = { 
-        order_id: req.body.order_id, 
-        time_stamp: new Date() 
-      };
+      //todo: handle submitting order
 
-      const projection = { email: 1, phone: 1 };
+      sendNotification(account, 'submit');
 
-      const account = await Database.findOneAndUpdate(
-        process.env.MONGODB_COLLECTION as string, 
-        { _id: getUserID(req._id) }, 
-        { order }, 
-        projection
-      );
-
-      if (account)
-      {
-        //todo: handle submitting order
-
-        sendNotification(account, 'submit');
-
-        res.redirect(302, `${ process.env.WEB_URL as string }`);
-      }
+      res.redirect(302, `${ process.env.WEB_URL as string }`);
     }
   }
   catch (error) {
@@ -217,7 +214,7 @@ export async function webhook (req: Request, res: Response)
   try {
 
     const event = req.body, 
-          webhookSession: User = JSON.parse(event.data.object.metadata[0]); 
+          webhookSession: Account = JSON.parse(event.data.object.metadata[0]); 
 
     switch (event.type) 
     {

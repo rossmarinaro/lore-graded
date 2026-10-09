@@ -1,5 +1,5 @@
 import { InsertOneResult, MongoClient, WithId } from 'mongodb'
-import { User, MongoDBOptions } from './types'
+import { User, MongoDBOptions } from './types/types'
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;

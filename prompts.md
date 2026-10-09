@@ -45,15 +45,19 @@ Create a request when submitting an order to 'https://lore-graded.onrender.com/a
 It should trigger when the user submits their selection of up to ten cards. This endpoint will add a user to the sunday drop queue and notify them by email. This endpoint does not need to store user order information but be able to map a submission in this api to the source of truth submission which is handled in sql.
 
 Requirements:
+
 1. Request Structure: The endpoint expects a POST request. The body must contain an object with value user_id returned from sql database for order submission.
+
 2. Authentication / Cookies: This endpoint is protected by a session token cookie (JWT). You MUST include `credentials: 'include'` in the fetch options so the browser automatically attaches the authentication cookies with the cross-origin request to Render.
+
 3. Payload Handling: Ensure the payload is correctly stringified with 'Content-Type': 'application/json' headers.
+
 4. Error Handling: Handle standard response statuses (e.g., 200/201 success, 401/403 access denied if the token cookie is missing or invalid, and 400/500 backend errors). Show appropriate UI feedback states (loading, success, error messages).
 
+5. The Order: Save the full order in SQL.  We will save only a lightweight document containing the user_id, order_id, and a queue timestamp. order_id: The SQL Insert Result - Where it comes from: When you insert the order into your SQL database (using Drizzle or native SQL), the database auto-generates the order's primary key (e.g., a serial integer or a UUID). Your SQL query should return this newly created ID so you can pass it along to MongoDB.
 
-1. The Order: Save the full order in SQL.
-2. The Queue: If you use MongoDB for the queue, save only a lightweight document containing the user_id, order_id, and a queue timestamp. order_id: The SQL Insert Result - Where it comes from: When you insert the order into your SQL database (using Drizzle or native SQL), the database auto-generates the order's primary key (e.g., a serial integer or a UUID). Your SQL query should return this newly created ID so you can pass it along to MongoDB.
-3. The Fulfillment: When a user reaches the front of the queue, read their order_id, pull the full details from SQL, and process the fulfillment.
+6. Set up an outboxTable for us to safely sync our main sql transactions with our high throughput mongodb queue tracking collection. Propose an integration such as a cron job to update our mongodb collection with a request to our backend "/api2". 
+
 
 <!-- Create a request when submitting an order to 'https://lore-graded.onrender.com/api2/api/submit-order'.
 It should trigger when the user submits their selection of up to ten cards.

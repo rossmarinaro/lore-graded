@@ -21,7 +21,8 @@
     /* Interop & Optimization */
     "esModuleInterop": true,                          /* Simplifies importing CommonJS modules */
     "forceConsistentCasingInFileNames": true,         /* Ensures case-sensitive file naming safety */
-    "skipLibCheck": true                              /* Skip type checking of declaration files (.d.ts) */
+    "skipLibCheck": true,                             /* Skip type checking of declaration files (.d.ts) */
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": ["src/**/*", "config"],                            /* Files compiled by tsc */
   "exclude": ["../node_modules", "../dist"],                /* Files completely ignored */

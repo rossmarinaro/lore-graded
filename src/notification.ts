@@ -1,6 +1,6 @@
 //import twilio from 'twilio';
 import nodemailer from 'nodemailer';
-import { EmailContextType, User } from './types';
+import { EmailContextType, User } from './types/types';
 
 
 //send confirmation email / SMS

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 
 import { Request, Response, NextFunction } from 'express'
 import { Database } from './database'
-import { CustomRequest, UserJwtPayload } from './types'
+import { UserJwtPayload } from './types/types'
 import { OAuth2Client } from 'google-auth-library'
 import { getUserID } from './utils'
 
@@ -18,7 +18,7 @@ const oAuth2Client = new OAuth2Client(
 //----------------------------------------------
 
 
-function getToken (req: CustomRequest): string | null
+function getToken (req: Request): string | null
 {
     //mobile token
 
@@ -46,7 +46,7 @@ function getToken (req: CustomRequest): string | null
 //------------------------------------
 
 
-export async function verifyAuth(req: CustomRequest, res: Response, next: NextFunction) 
+export async function verifyAuth(req: Request, res: Response, next: NextFunction) 
 {
     const token = getToken(req); 
 

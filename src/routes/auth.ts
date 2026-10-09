@@ -1,7 +1,7 @@
-import express from 'express';
+import { Router } from 'express';
 import { authenticate, authenticatedCallback } from '../verification';
 
-export const authRouter = express.Router();
+export const authRouter = Router();
 
 authRouter.get('/google', authenticate);
 authRouter.get('/google/callback', authenticatedCallback);
