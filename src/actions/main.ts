@@ -2,7 +2,7 @@ require('dotenv').config();
 
 import { Database } from '../database'
 import { Request, Response } from 'express'
-import { AuthenticatedRequest, Order, SyncRequestBody, Account} from '../types/types'
+import { AuthenticatedRequest, Order, SyncRequestBody, Account } from '../types/types'
 import { sendNotification } from '../notification'
 import { getUserID } from '../utils';
 import { AnyBulkWriteOperation } from 'mongodb';

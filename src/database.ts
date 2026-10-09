@@ -1,5 +1,5 @@
 import { InsertOneResult, MongoClient, WithId } from 'mongodb'
-import { User, MongoDBOptions } from './types/types'
+import { Account, MongoDBOptions } from './types/types'
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
@@ -44,19 +44,19 @@ export class Database {
         }
     }
 
-    public static async findOne(collection: string, options: Object, projection = {}): Promise<WithId<User> | null> {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(collection).findOne(options, { projection });
+    public static async findOne(collection: string, options: Object, projection = {}): Promise<WithId<Account> | null> {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).findOne(options, { projection });
         return user;
     }
 
-    public static async findAll(collection: string, limit = -1, options: User): Promise<WithId<User>[]> {
-        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(collection).find(options).limit(limit).toArray();
+    public static async findAll(collection: string, limit = -1, options: Account): Promise<WithId<Account>[]> {
+        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).find(options).limit(limit).toArray();
         return cluster;
     }
 
-    public static async findOneAndUpdate(collection: string, queryParams: Object, updateParams: Object, projection = {}, upsert = false): Promise<WithId<User> | null> 
+    public static async findOneAndUpdate(collection: string, queryParams: Object, updateParams: Object, projection = {}, upsert = false): Promise<WithId<Account> | null> 
     {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(collection).findOneAndUpdate(
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).findOneAndUpdate(
             queryParams, 
             { $set: updateParams },   
             { 
@@ -68,8 +68,8 @@ export class Database {
         return user;
     }
 
-    public static async insertOne(options: User): Promise<InsertOneResult<User>> {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<User>(process.env.MONGODB_COLLECTION as string).insertOne(options);
+    public static async insertOne(options: Account): Promise<InsertOneResult<Account>> {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(process.env.MONGODB_COLLECTION as string).insertOne(options);
         return user;
     }
 };
