@@ -5,7 +5,7 @@ echo "🔨 Running build..."
 npm run build
 
 #copy modified package.json to dist 
-cp assets/* dist
+cp assets/package.json dist
 
 if [ ! -d "dist" ]; then
   echo "❌ Error: dist directory does not exist."
