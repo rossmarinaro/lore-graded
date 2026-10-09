@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 
 import { Request, Response, NextFunction } from 'express'
 import { Database } from './database'
-import { AuthenticatedRequest, UserJwtPayload } from './types'
+import { CustomRequest, UserJwtPayload } from './types'
 import { OAuth2Client } from 'google-auth-library'
 import { getUserID } from './utils'
 
@@ -18,7 +18,7 @@ const oAuth2Client = new OAuth2Client(
 //----------------------------------------------
 
 
-function getToken (req: AuthenticatedRequest): string | null
+function getToken (req: CustomRequest): string | null
 {
     //mobile token
 
@@ -40,6 +40,33 @@ function getToken (req: AuthenticatedRequest): string | null
     else {
         console.log('No token or cookies present.');
         return null;
+    }
+}
+
+//------------------------------------
+
+
+export async function verifyAuth(req: CustomRequest, res: Response, next: NextFunction) 
+{
+    const token = getToken(req); 
+
+    if (!token) 
+        return res.status(401).send('Access denied. No token provided.');
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserJwtPayload,
+              account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded.userId )});
+                
+        if (!account) 
+            return res.status(403).send('No account found to authorize.');
+        
+        req._id = account._id;
+
+        next();
+    } 
+    catch (error) {
+        console.error('verifyAuth::Error: ', error);
+        return res.status(403).send('Invalid or expired token.');
     }
 }
 
@@ -129,29 +156,3 @@ export async function authenticatedCallback(req: Request, res: Response)
 }
 
 
-//------------------------------------
-
-
-export async function verifyAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) 
-{
-    const token = getToken(req); 
-
-    if (!token) 
-        return res.status(401).send('Access denied. No token provided.');
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserJwtPayload,
-              account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded.userId )});
-                    
-        if (account)
-            req._id = account._id;
-        else 
-            return res.status(403).send('No account found to authorize.');
-
-        next();
-    } 
-    catch (error) {
-        console.error('verifyAuth::Error: ', error);
-        return res.status(403).send('Invalid or expired token.');
-    }
-}

@@ -3,5 +3,5 @@ import { authenticate, authenticatedCallback } from '../verification';
 
 export const authRouter = express.Router();
 
-authRouter.get('/auth/google', authenticate);
-authRouter.get('/auth/google/callback', authenticatedCallback);
+authRouter.get('/google', authenticate);
+authRouter.get('/google/callback', authenticatedCallback);

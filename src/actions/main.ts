@@ -33,7 +33,7 @@ export async function logout (_req: Request, res: Response)
 //-----------------------------------------------
 
 
-export async function syncUsers(req: AuthenticatedRequest, res: Response) 
+export async function syncUsers(req: AuthenticatedRequest, res: Response)
 { 
   try 
   {
@@ -94,11 +94,14 @@ export async function syncUsers(req: AuthenticatedRequest, res: Response)
 //----------------------------------------------------
 
 
-export async function submitOrder (req: AuthenticatedRequest, res: Response)  
+export async function submitOrderToQueue (req: AuthenticatedRequest, res: Response)  
 {
-  const order = req.body.order as Order;
+  console.log('submitOrder: ', req.body);
 
-  console.log('Incoming order: ', order);
+  if (!req.body || !req.body.order_id) {
+    console.error('submitOrderToQueue :: Denied - Missing order_id in request body');
+    return res.status(400).send('Bad Request: order_id is required.');
+  }
 
   try 
   {                  
@@ -106,12 +109,16 @@ export async function submitOrder (req: AuthenticatedRequest, res: Response)
    //   res.status(400).send('No cards in order.');
   //  else 
     {
+      const order: Order = { 
+        order_id: req.body.order_id, 
+        time_stamp: new Date() 
+      };
 
       const projection = { email: 1, phone: 1 };
 
       const account = await Database.findOneAndUpdate(
         process.env.MONGODB_COLLECTION as string, 
-        { _id: getUserID(req._id as string) }, 
+        { _id: getUserID(req._id) }, 
         { order }, 
         projection
       );
@@ -122,7 +129,7 @@ export async function submitOrder (req: AuthenticatedRequest, res: Response)
 
         sendNotification(account, 'submit');
 
-        res.redirect(302, `${ process.env.WEB_URL as string }/purchase-submitted`);
+        res.redirect(302, `${ process.env.WEB_URL as string }`);
       }
     }
   }
@@ -139,13 +146,18 @@ export async function submitOrder (req: AuthenticatedRequest, res: Response)
 
 export async function checkout (req: AuthenticatedRequest, res: Response) 
 { 
+  if (!req._id) {
+    console.error('checkout :: Denied - req._id is undefined');
+    return res.status(401).send('Unauthorized: User session missing.');
+  }
+
   try { 
     
     const projection = { email: 1, phone: 1 };
 
     const account = await Database.findOne(
       process.env.MONGODB_COLLECTION as string,
-      { _id: getUserID(req._id as string) }, 
+      { _id: getUserID(req._id) }, 
       projection
     );
 
@@ -166,13 +178,13 @@ export async function checkout (req: AuthenticatedRequest, res: Response)
           cancel_url: process.env.WEB_URL,
           line_items: [
             {
-              // price_data: { 
-              //   currency: 'usd',
-              //   product_data: { name: 'loregraded' },
-              //   unit_amount: price,
-              // },
+              price_data: { 
+                currency: 'usd',
+                product_data: { name: 'loregraded' },
+                unit_amount: price,
+              },
 
-              price: 'price_1N234567890',
+              //price: 'price_1N234567890',
               quantity: 1
             }
           ],

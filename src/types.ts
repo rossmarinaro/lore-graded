@@ -7,26 +7,9 @@ export interface MongoDBOptions {
   maxIdleTimeMS: number;
 } 
 
-export interface Card {
-  serial_number: string;
-  type: string;
-};
-
-export interface PhysicalCard extends Card {
-  grade: number;
-};
-
 export interface Order {
-  type: string;
-  cards: Card[];
-  created_at: Date;
-  recipient: string; 
-  street_address: string;
-  apartment: string;
-  city: string;
-  zip: string;
-  state: string;
-  country: string;
+  order_id: string; //sql id
+  time_stamp: Date;
 };
 
 interface Account {
@@ -37,10 +20,13 @@ interface Account {
 
 export type UnAuthenticatedRequest = Request & Account;
 
-export type AuthenticatedRequest = Request & {
-  token?: string;
-  _id?: string;
-};
+export interface CustomRequest extends Request {
+  _id?: string; 
+}
+
+export interface AuthenticatedRequest extends Request {
+  _id: string; 
+}
 
 export interface SyncRequestBody {
   collection: string;
@@ -57,7 +43,7 @@ export interface SyncRequestBody {
 export type User = Account & {
   _id: string;
   paid: boolean;
-  order: Order;
+  orders: Order[];
 };
 
 export interface UserJwtPayload extends jwt.JwtPayload {
