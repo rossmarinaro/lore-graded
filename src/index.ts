@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-import path from 'path'
+//import path from 'path'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import express, { Request, Response } from 'express'
@@ -23,7 +23,7 @@ app.use('/api2/auth', authRouter);
 app.use('/api2/api', verifyAuth, apiRouter);
 
 //serve files
-app.use(express.static(path.join(__dirname, '../test')));
+//app.use(express.static(path.join(__dirname, '../test')));
 
 app.get('/', (_req: Request, res: Response) => res.status(200).send('Welcome to Loregraded'));
 
