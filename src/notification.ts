@@ -41,13 +41,6 @@ export async function sendNotification(account: User, contextType: EmailContextT
                     <b>
                         <p>
                             order details:
-                            \n recipient: ${ account.order.recipient }
-                            \n street: ${ account.order.street_address }
-                            \n zip: ${ account.order.zip }
-                            \n city: ${ account.order.city }
-                            \n state: ${ account.order.state }
-                            \n country: ${ account.order.country }
-                            \n cards: ${ account.order.cards.map(card => `<p>${ card.serial_number }</p>`).join('') }
                         </p>
                     </b>`;
     
