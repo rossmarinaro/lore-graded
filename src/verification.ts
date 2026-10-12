@@ -124,30 +124,30 @@ export async function authenticatedCallback(req: Request, res: Response)
             ); 
 
             // 2. Generate your own custom JWT app token (expires in 1 day)
-            const appToken = jwt.sign(
+            const token = jwt.sign(
                 { userId: user?._id, email: user?.email }, 
                 process.env.JWT_SECRET as string, 
-                { expiresIn: '1d' }
+                { expiresIn: '5m'/* '1d' */ }
             );
 
             // 3. Send the token securely to the client via an HTTP-only cookie
 
             const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
-            res.cookie('session_id', appToken, {
-                // 🌟 FIX: Added the leading dot to explicitly share across root and subdomains
-                domain: isProd ? '.loregraded.com' : undefined, 
-                httpOnly: true,
-                secure: true, // 🌟 FIX: Always keep secure true since Render uses HTTPS
-                // 🌟 FIX: Changed 'none' to 'lax' for secure first-party subdomain sharing
-                sameSite: isProd ? 'lax' : 'none', 
-                path: '/'
-            }).status(200);
+            // res.cookie('session_id', appToken, {
+            //     // 🌟 FIX: Added the leading dot to explicitly share across root and subdomains
+            //     domain: isProd ? '.loregraded.com' : undefined, 
+            //     httpOnly: true,
+            //     secure: true, // 🌟 FIX: Always keep secure true since Render uses HTTPS
+            //     // 🌟 FIX: Changed 'none' to 'lax' for secure first-party subdomain sharing
+            //     sameSite: isProd ? 'lax' : 'none', 
+            //     path: '/'
+            // }).status(200);
             
             if (!isProd)
-                console.log('Authenticated token: ', appToken);
+                console.log('Authenticated token: ', token);
             
-            return res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
+            return res.redirect(302, `${ process.env.WEB_URL }?token=${ token }` /* process.env.WEB_URL as string */); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
         } 
         catch (error) {
             res.status(403).send('Authentication failed.');

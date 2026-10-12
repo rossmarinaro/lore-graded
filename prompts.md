@@ -179,3 +179,50 @@ change or sync authentication to "https://api.loregraded.com/api2/auth/google", 
 sign in with google button takes us in circles. confirmed endpoint redirect to auth login 
 on webservice hosted on render, however when authorized the redirect takes us back to loregraded.com
 as specified by the backend and the user is still not able to submit their cards.
+
+
+
+
+
+
+
+1. Use functionality like this to save auth from the render backend as a session token instead of cookies
+// Run this immediately when your main layout or dashboard component loads
+const initializeSession = () => {
+  // 1. Look for the token parameter in the URL bar
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenFromUrl = urlParams.get('token');
+
+  if (tokenFromUrl) {
+    // 2. Found it! Save it securely to local storage
+    localStorage.setItem('auth_token', tokenFromUrl);
+    
+    // 3. Clean up the URL query string so the user doesn't see a messy string
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
+    console.log("User successfully authenticated and stored via localStorage.");
+  }
+};
+
+2. make secure api calls to the render backend
+const submitOrder = async (orderPayload) => {
+  const token = localStorage.getItem('auth_token');
+
+  const response = await fetch('https://loregraded.com', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` // 🌟 Attaches your JWT token securely
+    },
+    body: JSON.stringify({ order: orderPayload })
+  });
+
+  if (response.status === 401) {
+    // Session is stale or invalid; clear it out
+    localStorage.removeItem('auth_token');
+    window.location.href = '/login';
+    return;
+  }
+
+  return await response.json();
+};
