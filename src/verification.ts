@@ -148,7 +148,7 @@ res.cookie('session_id', appToken, {
             //     sameSite: isProd ? 'none' : 'lax' // 'none' requires secure: true for cross-domain CORS - strict // Prevents CSRF attacks
             // });
             
-            if (process.env.NODE_ENV !== 'production')
+            //if (process.env.NODE_ENV !== 'production')
                 console.log('Authenticated token: ', appToken);
             
             res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
