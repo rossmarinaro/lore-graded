@@ -175,3 +175,7 @@ Full schema, mapping, and backend handoff (sandbox:/workspace/scratch/0f30ff1e5f
 
 
 change or sync authentication to "https://api.loregraded.com/api2/auth/google", cookies are failing to send. Is User authenticated with gpt, or the render microservice? endpoints seem correct, no apparent account profile is visible in the frontend app.
+
+sign in with google button takes us in circles. confirmed endpoint redirect to auth login 
+on webservice hosted on render, however when authorized the redirect takes us back to loregraded.com
+as specified by the backend and the user is still not able to submit their cards.
