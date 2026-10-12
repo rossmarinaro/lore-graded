@@ -5,7 +5,7 @@ declare global {
     interface Request {
       _id?: string; 
       cookies: {
-        token?: string;
+        session_id?: string;
         [key: string]: any;
       };
     }

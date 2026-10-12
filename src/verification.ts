@@ -30,9 +30,9 @@ function getToken (req: Request): string | null
 
     //fallback to cookies (web)
 
-    else if (req.cookies && req.cookies.token)  {
+    else if (req.cookies && req.cookies.session_id)  {
         console.log('Retrieving cookies...');
-        return req.cookies.token;
+        return req.cookies.session_id;
     }
 
     //none
@@ -131,12 +131,12 @@ export async function authenticatedCallback(req: Request, res: Response)
             );
 
             // 3. Send the token securely to the client via an HTTP-only cookie
-            res.cookie('session_token', appToken, {
+            res.cookie('session_id', appToken, {
                 httpOnly: true, // Prevents XSS attacks from reading the token
                 secure: process.env.NODE_ENV === 'production', // Requires HTTPS in production
                 sameSite: 'lax'/* 'strict' */, /* 'none' */ // Prevents CSRF attacks  / 'lax' works perfectly if they share a root domain
                 maxAge: 24 * 60 * 60 * 1000, // 1 day
-                domain: 'loregraded.com'
+                //domain: 'loregraded.com'
                 //domain: '.loregraded.com', 
             });
             
