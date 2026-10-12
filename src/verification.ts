@@ -132,23 +132,18 @@ export async function authenticatedCallback(req: Request, res: Response)
 
             // 3. Send the token securely to the client via an HTTP-only cookie
 
-            //const isProd = process.env.NODE_ENV === 'production';
-res.cookie('session_id', appToken, {
-  domain: '.loregraded.com', // Allows sharing between api. and root domain
-  httpOnly: true,           // Prevents XSS attacks
-  secure: true,             // Required since production uses HTTPS
-  sameSite: 'lax',          // Protects against CSRF while allowing subdomain access
-  path: '/'
-});
-            // res.cookie('session_id', appToken, {
-            //     // Omit domain in development so it defaults cleanly to localhost
-            //     ...(isProd && { domain: 'loregraded.com' }), 
-            //     httpOnly: true,
-            //     secure: isProd, // Requires HTTPS in production
-            //     sameSite: isProd ? 'none' : 'lax' // 'none' requires secure: true for cross-domain CORS - strict // Prevents CSRF attacks
-            // });
+            const isProd = process.env.NODE_ENV === 'production';
+
+            res.cookie('session_id', appToken, {
+                // Omit domain in development so it defaults cleanly to localhost
+                ...(isProd && { domain: 'loregraded.com' }), 
+                httpOnly: true,
+                secure: isProd, // Requires HTTPS in production
+                sameSite: isProd ? 'none' : 'lax', // 'none' requires secure: true for cross-domain CORS - strict // Prevents CSRF attacks
+                path: '/'
+            });
             
-            //if (process.env.NODE_ENV !== 'production')
+            if (process.env.NODE_ENV !== 'production')
                 console.log('Authenticated token: ', appToken);
             
             res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
