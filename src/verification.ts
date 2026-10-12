@@ -132,18 +132,19 @@ export async function authenticatedCallback(req: Request, res: Response)
 
             // 3. Send the token securely to the client via an HTTP-only cookie
 
-            const isProd = process.env.NODE_ENV === 'production';
+            const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
             res.cookie('session_id', appToken, {
-                // Omit domain in development so it defaults cleanly to localhost
-                ...(isProd && { domain: 'loregraded.com' }), 
+                // 🌟 FIX: Added the leading dot to explicitly share across root and subdomains
+                domain: isProd ? '.loregraded.com' : undefined, 
                 httpOnly: true,
-                secure: isProd, // Requires HTTPS in production
-                sameSite: isProd ? 'none' : 'lax', // 'none' requires secure: true for cross-domain CORS - strict // Prevents CSRF attacks
+                secure: true, // 🌟 FIX: Always keep secure true since Render uses HTTPS
+                // 🌟 FIX: Changed 'none' to 'lax' for secure first-party subdomain sharing
+                sameSite: isProd ? 'lax' : 'none', 
                 path: '/'
             });
             
-            if (process.env.NODE_ENV !== 'production')
+            if (!isProd)
                 console.log('Authenticated token: ', appToken);
             
             res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
