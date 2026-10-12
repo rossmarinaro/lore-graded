@@ -170,3 +170,8 @@ Two remaining integration points:
 Your exact payload excludes country, service, pricing, and source order ID; those remain in SQL.
 Render must permit credentialed CORS and set an appropriate cookie. credentials: 'include' cannot override browser cookie restrictions. A real authenticated MongoDB write has not yet been verified. 
 Full schema, mapping, and backend handoff (sandbox:/workspace/scratch/0f30ff1e5f1c/main-site/docs/ORDER-API2-HANDOFF.md?_chatgptios_conversationID=6ac8c825-ce18-83ea-bab0-ef0a320ce8e9&_chatgptios_messageID=47119bfe-065a-5b1d-b006-493d481b8f62)⁠
+
+
+
+
+change or sync authentication to "https://api.loregraded.com/api2/auth/google", cookies are failing to send. Is User authenticated with gpt, or the render microservice? endpoints seem correct, no apparent account profile is visible in the frontend app.

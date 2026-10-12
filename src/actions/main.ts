@@ -15,7 +15,7 @@ import { stripe } from '../stripe';
 export async function logout (_req: Request, res: Response) 
 {
   try {
-    res.clearCookie('session_token', {
+    res.clearCookie('session_id', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax'

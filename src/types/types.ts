@@ -15,7 +15,7 @@ export interface Order {
 export interface AuthenticatedRequest extends Request {
     _id?: string;
     cookies: {
-      token?: string;
+      session_id?: string;
       [key: string]: any;
     };
 }

@@ -131,14 +131,21 @@ export async function authenticatedCallback(req: Request, res: Response)
             );
 
             // 3. Send the token securely to the client via an HTTP-only cookie
-            res.cookie('session_id', appToken, {
-                httpOnly: true, // Prevents XSS attacks from reading the token
-                secure: process.env.NODE_ENV === 'production', // Requires HTTPS in production
-                sameSite: 'lax'/* 'strict' */, /* 'none' */ // Prevents CSRF attacks  / 'lax' works perfectly if they share a root domain
-                maxAge: 24 * 60 * 60 * 1000, // 1 day
-                //domain: 'loregraded.com'
-                //domain: '.loregraded.com', 
-            });
+
+            //const isProd = process.env.NODE_ENV === 'production';
+res.cookie('session_id', appToken, {
+  domain: '.loregraded.com', // Allows sharing between api. and root domain
+  httpOnly: true,           // Prevents XSS attacks
+  secure: true,             // Required since production uses HTTPS
+  sameSite: 'lax'           // Protects against CSRF while allowing subdomain access
+});
+            // res.cookie('session_id', appToken, {
+            //     // Omit domain in development so it defaults cleanly to localhost
+            //     ...(isProd && { domain: 'loregraded.com' }), 
+            //     httpOnly: true,
+            //     secure: isProd, // Requires HTTPS in production
+            //     sameSite: isProd ? 'none' : 'lax' // 'none' requires secure: true for cross-domain CORS - strict // Prevents CSRF attacks
+            // });
             
             if (process.env.NODE_ENV !== 'production')
                 console.log('Authenticated token: ', appToken);
