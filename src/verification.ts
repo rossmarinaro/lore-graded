@@ -134,20 +134,20 @@ export async function authenticatedCallback(req: Request, res: Response)
 
             const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
-            // res.cookie('session_id', appToken, {
-            //     // 🌟 FIX: Added the leading dot to explicitly share across root and subdomains
-            //     domain: isProd ? '.loregraded.com' : undefined, 
-            //     httpOnly: true,
-            //     secure: true, // 🌟 FIX: Always keep secure true since Render uses HTTPS
-            //     // 🌟 FIX: Changed 'none' to 'lax' for secure first-party subdomain sharing
-            //     sameSite: isProd ? 'lax' : 'none', 
-            //     path: '/'
-            // }).status(200);
+            res.cookie('session_id', token, {
+                // 🌟 FIX: Added the leading dot to explicitly share across root and subdomains
+                domain: isProd ? '.loregraded.com' : undefined, 
+                httpOnly: true,
+                secure: true, // 🌟 FIX: Always keep secure true since Render uses HTTPS
+                // 🌟 FIX: Changed 'none' to 'lax' for secure first-party subdomain sharing
+                sameSite: isProd ? 'lax' : 'none', 
+                path: '/'
+            }).status(200);
             
             if (!isProd)
                 console.log('Authenticated token: ', token);
             
-            return res.redirect(302, `${ process.env.WEB_URL }?token=${ token }` /* process.env.WEB_URL as string */); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
+            return res.redirect(302, `${ process.env.WEB_URL }?token=${ token }`); 
         } 
         catch (error) {
             res.status(403).send('Authentication failed.');

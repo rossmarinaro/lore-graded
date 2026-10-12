@@ -226,3 +226,11 @@ const submitOrder = async (orderPayload) => {
 
   return await response.json();
 };
+
+
+
+
+Token successfully appears in localstorage in production, however the auth login mismatch remains unresolved.
+logging in via google auth on submit cards successfully hits the endpoint hosted on render, fires the callback, and
+sends a jwt but a user then cannot submit cards because they are not logged in as far as the app is concerned. 
+Propose a clean and concise solution.
