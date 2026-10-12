@@ -1,11 +1,11 @@
 //import twilio from 'twilio';
 import nodemailer from 'nodemailer';
-import { EmailContextType, User } from './types/types';
+import { EmailContextType, Account } from './types/types';
 
 
 //send confirmation email / SMS
 
-export async function sendNotification(account: User, contextType: EmailContextType /* , data?: string */) 
+export async function sendNotification(account: Account, contextType: EmailContextType /* , data?: string */) 
 {
     try {
 
