@@ -137,7 +137,7 @@ res.cookie('session_id', appToken, {
   domain: '.loregraded.com', // Allows sharing between api. and root domain
   httpOnly: true,           // Prevents XSS attacks
   secure: true,             // Required since production uses HTTPS
-  sameSite: 'none',          // Protects against CSRF while allowing subdomain access
+  sameSite: 'lax',          // Protects against CSRF while allowing subdomain access
   path: '/'
 });
             // res.cookie('session_id', appToken, {

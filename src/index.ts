@@ -15,6 +15,7 @@ import { rateLimiter } from './rateLimiter';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.enable('trust proxy'); 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: [ process.env.WEB_URL as string, process.env.API_URL as string], credentials: true }));
