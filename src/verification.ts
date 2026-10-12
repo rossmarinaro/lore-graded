@@ -142,12 +142,12 @@ export async function authenticatedCallback(req: Request, res: Response)
                 // 🌟 FIX: Changed 'none' to 'lax' for secure first-party subdomain sharing
                 sameSite: isProd ? 'lax' : 'none', 
                 path: '/'
-            });
+            }).status(200);
             
             if (!isProd)
                 console.log('Authenticated token: ', appToken);
             
-            res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
+            return res.redirect(302, process.env.WEB_URL as string); //res.redirect(302, `${ process.env.WEB_URL }{tempToken}`); // Redirect to your app's frontend dashboard
         } 
         catch (error) {
             res.status(403).send('Authentication failed.');
