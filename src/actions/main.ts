@@ -107,8 +107,7 @@ export async function submitOrderToQueue (req: Request, res: Response)
     return res.status(400).send('Bad Request: order_id is required.');
   }
 
-  try 
-  {                  
+  try {                  
     const order: Order = { order_id: req.body.order_id, time_stamp: new Date() };
 
     const projection = { email: 1, phone: 1 };
@@ -120,12 +119,8 @@ export async function submitOrderToQueue (req: Request, res: Response)
       projection
     );
 
-    if (account)
-    {
-      //todo: handle submitting order
-
+    if (account) {
       sendNotification(account, 'submit');
-
       res.redirect(302, `${ process.env.WEB_URL as string }`);
     }
   }
@@ -144,18 +139,10 @@ export async function checkout (account: Account)
 { 
   try { 
     
-    //const projection = { email: 1, phone: 1 };
-
-    // const account = await Database.findOne(
-    //   process.env.MONGODB_COLLECTION as string,
-    //   { _id: req._id }, 
-    //   projection
-    // );
-
     if (account)
     {
       const metadata = {
-        recipient: '' /* req.body.recipient ?? null */,
+        recipient: account.email ?? null,
         email: account.email ?? null,
         phone: account.phone ?? null
       }

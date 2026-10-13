@@ -37,8 +37,13 @@ export async function sendNotification(account: Account, contextType: EmailConte
     
             break;
             case 'purchase.offered':
-            {
+            { 
                 const stripeUrl = await checkout(account);
+
+                if (!stripeUrl) {
+                    console.log('There was a problem issuing a stripe checkout link.');
+                    return;
+                }
 
                 subject = 'You Have Been Selected!';
                 html = `<img src="${ process.env.LOGO_IMG }" alt="Company Logo" width="200" height="100">

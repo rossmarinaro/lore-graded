@@ -244,3 +244,12 @@ render-session.js?v=20261012-bearer:31  POST https://loregraded.com/api/session 
 is fired and redirects the user to loregraded.com. Link lore account verification to the jwt returned from authorization.
 write an interceptor (like an Axios interceptor). Propose a solution wher if an API request fails with a 401 Unauthorized due to an expired token, the frontend instantly hits a hidden /api2/auth/refresh endpoint.
 fix this and allow a user access to their lore account when logged into the render service that returns a jwt.
+
+
+Refresh endpoint is being implemented but log in takes us in circles. Provide a detailed concise summary 
+of the proper solution to login to the webservice and have it use the credentials to log onto loregraded. Features like
+submissions are still blocked
+
+Render app sends a JWT on log in, take this token and verify it with a loregraded account, or create one. If the gpt generated
+app needs a matching secret key to use as an environment variable, let us know. We want our login to be on the webservice and
+sync accounts while allowing data and user profiles to remain as is. 

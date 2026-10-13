@@ -71,6 +71,15 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
 }
 
 
+//------------------------------------
+
+
+export async function refreshToken(_req: Request, _res: Response) 
+{
+    console.log('Token refresh.')
+}
+
+
 //---------------------------------------- 1. Redirect users to Google for login
 
 export async function authenticate (_req: Request, res: Response) 
