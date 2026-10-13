@@ -253,3 +253,7 @@ submissions are still blocked
 Render app sends a JWT on log in, take this token and verify it with a loregraded account, or create one. If the gpt generated
 app needs a matching secret key to use as an environment variable, let us know. We want our login to be on the webservice and
 sync accounts while allowing data and user profiles to remain as is. 
+
+Render backend webservice environment variable has been changed from JWT_SECRET to LORE_RENDER_JWT_SECRET.
+The developer does not have access to the value of LORE_RENDER_JWT_SECRET on the godaddy site. Confirm where the 
+developer can find this value - what method of deployment to godaddy and where to look. Which hosting plan (Shared cPanel, Node.js hosting, VPS) and programming language/framework are you deploying with?

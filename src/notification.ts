@@ -7,7 +7,7 @@ import { checkout } from './actions/main';
 
 //send confirmation email / SMS
 
-export async function sendNotification(account: Account, contextType: EmailContextType /* , data?: string */) 
+export async function sendNotification(account: Account, contextType: EmailContextType) 
 {
     try {
 

@@ -189,7 +189,7 @@ export async function checkout (account: Account)
 //----------------------------------
 
 
-export async function webhook (req: Request, res: Response) 
+export async function paymentHook (req: Request, res: Response) 
 { 
   try {
 
@@ -227,7 +227,7 @@ export async function webhook (req: Request, res: Response)
   }
 
   catch(error) {
-    console.error('webhook::Error: ', error);
+    console.error('paymentHook::Error: ', error);
   }
 
   res.json({ received: true });
