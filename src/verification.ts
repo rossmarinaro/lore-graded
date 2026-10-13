@@ -4,9 +4,10 @@ import jwt from 'jsonwebtoken'
 
 import { Request, Response, NextFunction } from 'express'
 import { Database } from './database'
-import { UserJwtPayload } from './types/types'
+import { GoogleAuthQuery, OpenAIState, UserJwtPayload } from './types/types'
 import { OAuth2Client } from 'google-auth-library'
 import { getUserID } from './utils'
+import crypto from 'crypto';
 
 const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
@@ -54,7 +55,7 @@ function getToken (req: Request): string | null
 const authCodes = new Map();
 const accessTokens = new Map();
 
-function redirectToChatGPT(req: Request, res: Response) 
+function redirectToChatGPT(req: any/* Request */, res: Response) 
 {
   // 1. Explicitly check if oauthState exists first
 
@@ -113,16 +114,27 @@ export async function refreshToken(_req: Request, _res: Response)
 //---------------------------------------- 1. Redirect users to Google for login
 
 
-export async function authenticate (_req: Request, res: Response) 
+export async function authenticate (req: Request, res: Response) 
 {
+    const { redirect_uri, state } = req.query;
+
     try {
+    
+        // Bundle OpenAI's parameters together to pass along safely to Google
+        const googleStatePayload = Buffer.from(JSON.stringify({
+            redirect_uri,
+            state,
+            isGptFlow: !!redirect_uri
+        })).toString('base64');
+
         const scope = ['openid', 'profile', 'email'];
 
         const googleAuthUrl = oAuth2Client.generateAuthUrl({
             access_type: 'offline', // Generates a refresh token for extended access
             prompt: 'consent',     // Forces refresh token generation on re-auth
             scope,
-            include_granted_scopes: true
+            include_granted_scopes: true,
+            state: googleStatePayload 
         });
 
         res.redirect(302, googleAuthUrl);
@@ -199,12 +211,12 @@ export function authToken(req: Request, res: Response)
 
 //---------------------------------------- 1. Redirect users to Google for login
 
-export async function authenticatedCallback(req: Request, res: Response) 
+export async function authenticatedCallback(req: Request<{}, any, any, GoogleAuthQuery>, res: Response) 
 {
     try {
-        const { error, code } = req.query;
+        const { error, code, state } = req.query;
 
-        if (error || !code) 
+        if (error || !code || !state) 
             return res.status(401).send('Auth handshake failed.');
         
         try {
@@ -237,6 +249,24 @@ export async function authenticatedCallback(req: Request, res: Response)
                 projection, 
                 true
             ); 
+
+            const parsedState = JSON.parse(Buffer.from(state, 'base64').toString('ascii')) as OpenAIState;
+
+            if (parsedState.isGptFlow) 
+            {
+                const generatedCode = crypto.randomBytes(24).toString('hex');
+
+                // Save code to verify during token swap
+                await Database.insertOne('states', {
+                    code: generatedCode,
+                    userId: user?._id,
+                    openaiState: parsedState.state,
+                    created_at: new Date() // TTL index uses this to auto-delete in 5 mins
+                });
+
+                // Redirect directly back to OpenAI's callback servers
+                return res.redirect(`${parsedState.redirect_uri}?code=${generatedCode}&state=${parsedState.state}`);
+            }
 
             // 2. Generate your own custom JWT app token (expires in 1 day)
             const token = jwt.sign(

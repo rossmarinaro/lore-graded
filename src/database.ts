@@ -1,4 +1,4 @@
-import { InsertOneResult, MongoClient, WithId } from 'mongodb'
+import { MongoClient, WithId } from 'mongodb'
 import { Account, MongoDBOptions } from './types/types'
 
 declare global {
@@ -68,8 +68,8 @@ export class Database {
         return user;
     }
 
-    public static async insertOne(options: Account): Promise<InsertOneResult<Account>> {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(process.env.MONGODB_COLLECTION as string).insertOne(options);
+    public static async insertOne(collection: string, params: Object) {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).insertOne(params);
         return user;
     }
 };
