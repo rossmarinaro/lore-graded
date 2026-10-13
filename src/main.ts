@@ -1,4 +1,5 @@
 import schedule from 'node-schedule';
+import { sendTargetedNotifications } from './notification';
 
 export function main() 
 {
@@ -9,7 +10,8 @@ export function main()
     const job = schedule.scheduleJob('sunday-drop-cron', rule, () => {
         console.log(`Scheduled job: ${ job.name } completed.`);
         //todo: logic to accumulate selected users to notify for payment.
-        //sendTargetedEmails();
+        
+        sendTargetedNotifications();
     });
 
     console.log(`Scheduled job: ${ job.name } initiated.`);

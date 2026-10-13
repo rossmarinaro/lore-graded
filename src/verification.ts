@@ -114,7 +114,7 @@ export async function authenticatedCallback(req: Request, res: Response)
                 throw new Error('Invalid token payload');
             
             const projection = { email: 1 };
-            
+          
             const user = await Database.findOneAndUpdate(
                 process.env.MONGODB_COLLECTION as string,
                 { email: payload?.email }, 
@@ -127,7 +127,7 @@ export async function authenticatedCallback(req: Request, res: Response)
             const token = jwt.sign(
                 { userId: user?._id, email: user?.email }, 
                 process.env.JWT_SECRET as string, 
-                { expiresIn: '5m'/* '1d' */ }
+                { expiresIn: '15m'/* '1d' */ }
             );
 
             // 3. Send the token securely to the client via an HTTP-only cookie

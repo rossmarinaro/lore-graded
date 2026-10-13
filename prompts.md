@@ -229,8 +229,18 @@ const submitOrder = async (orderPayload) => {
 
 
 
+Since your SQL database and ORM live separately from Render (likely on a GoDaddy VPS, cPanel hosting, or a managed DB provider), you must protect it. Never expose raw SQL ports (like 3306 or 5432) directly to the public internet without strict security layers.
+You have two options to connect the frontend to the SQL DB using the token:
 
-Token successfully appears in localstorage in production, however the auth login mismatch remains unresolved.
-logging in via google auth on submit cards successfully hits the endpoint hosted on render, fires the callback, and
-sends a jwt but a user then cannot submit cards because they are not logged in as far as the app is concerned. 
-Propose a clean and concise solution.
+Option	How it Works	Pros & Cons
+Option A: Direct DB API (Recommended)	Create a mini-API layer directly on the SQL host that intercepts frontend requests, validates the JWT, and queries the ORM.	🟢 Highly secure.
+🔴 Requires deploying a small API on the DB host.
+Option B: Render Proxy	The GoDaddy frontend sends requests back to Render with the token. Render validates it, queries the SQL DB remotely, and returns data.	🟢 Simple architecture.
+🔴 Render needs direct network access to your remote SQL DB.
+
+
+Render sign in workflow successfully signs user in. App dashboard under submit my cards still remains "Account unavailable". "Your login is verified, but its existing LORE account still needs to be linked."
+render-session.js?v=20261012-bearer:31  POST https://loregraded.com/api/session 409 (Conflict) error when auth callback
+is fired and redirects the user to loregraded.com. Link lore account verification to the jwt returned from authorization.
+write an interceptor (like an Axios interceptor). Propose a solution wher if an API request fails with a 401 Unauthorized due to an expired token, the frontend instantly hits a hidden /api2/auth/refresh endpoint.
+fix this and allow a user access to their lore account when logged into the render service that returns a jwt.

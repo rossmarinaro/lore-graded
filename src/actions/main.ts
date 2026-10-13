@@ -2,9 +2,8 @@ require('dotenv').config();
 
 import { Database } from '../database'
 import { Request, Response } from 'express'
-import { AuthenticatedRequest, Order, SyncRequestBody, Account } from '../types/types'
+import { Order, SyncRequestBody, Account } from '../types/types'
 import { sendNotification } from '../notification'
-import { getUserID } from '../utils';
 import { AnyBulkWriteOperation } from 'mongodb';
 import { stripe } from '../stripe';
 
@@ -116,7 +115,7 @@ export async function submitOrderToQueue (req: Request, res: Response)
 
     const account = await Database.findOneAndUpdate(
       process.env.MONGODB_COLLECTION as string, 
-      { _id: getUserID(req._id) }, 
+      { _id: req._id }, 
       { order }, 
       projection
     );
@@ -141,27 +140,22 @@ export async function submitOrderToQueue (req: Request, res: Response)
 
 
 
-export async function checkout (req: AuthenticatedRequest, res: Response) 
+export async function checkout (account: Account)
 { 
-  if (!req._id) {
-    console.error('checkout :: Denied - req._id is undefined');
-    return res.status(401).send('Unauthorized: User session missing.');
-  }
-
   try { 
     
-    const projection = { email: 1, phone: 1 };
+    //const projection = { email: 1, phone: 1 };
 
-    const account = await Database.findOne(
-      process.env.MONGODB_COLLECTION as string,
-      { _id: getUserID(req._id) }, 
-      projection
-    );
+    // const account = await Database.findOne(
+    //   process.env.MONGODB_COLLECTION as string,
+    //   { _id: req._id }, 
+    //   projection
+    // );
 
     if (account)
     {
       const metadata = {
-        recipient: req.body.recipient ?? null,
+        recipient: '' /* req.body.recipient ?? null */,
         email: account.email ?? null,
         phone: account.phone ?? null
       }
@@ -194,14 +188,13 @@ export async function checkout (req: AuthenticatedRequest, res: Response)
         '\nMetadata: ', JSON.stringify(account)
       );
         
-      res.status(200).send(stripeSession.url);
+      return stripeSession.url;
     }
     else 
-      res.status(401).send('Please create an account before checking out.');
+      console.log('Please create an account before checking out.');
   } 
   catch (error) {
     console.error('checkout::Error: ', error);
-    res.status(500).send('Internal Server Error');
   }
 }
 

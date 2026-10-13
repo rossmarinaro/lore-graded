@@ -22,7 +22,7 @@ export class Database {
 
             //init and cache mongodb client
 
-            if (process.env.NODE_ENV === 'development') 
+            if (process.env.NODE_ENV !== 'production') 
             {
                 if (!global._mongoClientPromise) {
                     this.client = new MongoClient(process.env.MONGODB_ATLAS_URI as string, this.options);
@@ -44,17 +44,17 @@ export class Database {
         }
     }
 
-    public static async findOne(collection: string, options: Object, projection = {}): Promise<WithId<Account> | null> {
+    public static async findOne(collection: string, options: Account, projection = {}): Promise<WithId<Account> | null> {
         const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).findOne(options, { projection });
         return user;
     }
 
-    public static async findAll(collection: string, limit = -1, options: Account): Promise<WithId<Account>[]> {
+    public static async findAll(collection: string, limit = -1, options = {}): Promise<WithId<Account>[]> {
         const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).find(options).limit(limit).toArray();
         return cluster;
     }
 
-    public static async findOneAndUpdate(collection: string, queryParams: Object, updateParams: Object, projection = {}, upsert = false): Promise<WithId<Account> | null> 
+    public static async findOneAndUpdate(collection: string, queryParams: Account, updateParams: Object, projection = {}, upsert = false): Promise<WithId<Account> | null> 
     {
         const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).findOneAndUpdate(
             queryParams, 

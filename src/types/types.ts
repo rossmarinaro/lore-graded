@@ -1,5 +1,5 @@
-import { Request } from 'express'
 import jwt from 'jsonwebtoken'
+import { ObjectId } from 'mongodb';
 
 export interface MongoDBOptions {
   maxPoolSize: number;
@@ -11,14 +11,6 @@ export interface Order {
   order_id: string; //sql id
   time_stamp: Date;
 };
-
-export interface AuthenticatedRequest extends Request {
-    _id?: string;
-    cookies: {
-      session_id?: string;
-      [key: string]: any;
-    };
-}
 
 export interface SyncRequestBody {
   collection: string;
@@ -33,16 +25,16 @@ export interface SyncRequestBody {
 }
 
 export interface Account {
-  _id: string;
-  email: string;
-  password: string;
-  phone: string;
-  paid: boolean;
-  orders: Order[];
+  _id?: ObjectId;
+  email?: string;
+  password?: string;
+  phone?: string;
+  paid?: boolean;
+  orders?: Order[];
 };
 
 export interface UserJwtPayload extends jwt.JwtPayload {
   _id: string;
 }
 
-export type EmailContextType = 'submit' | 'purchase.complete';
+export type EmailContextType = 'submit' | 'purchase.complete' | 'purchase.offered';
