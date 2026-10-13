@@ -28,7 +28,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI, // Your database connection string
+    mongoUrl: process.env.MONGODB_ATLAS_URI, // Your database connection string
     ttl: 14 * 24 * 60 * 60 // Sessions expire in 14 days
   }),
   cookie: { secure: process.env.NODE_ENV === 'production' }
