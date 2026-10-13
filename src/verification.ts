@@ -54,7 +54,7 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
         return res.status(401).send('Access denied. No token provided.');
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserJwtPayload,
+        const decoded = jwt.verify(token, process.env.LORE_RENDER_JWT_SECRET as string) as UserJwtPayload,
               account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded.userId )});
                 
         if (!account) 
@@ -76,7 +76,7 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
 
 export async function refreshToken(_req: Request, _res: Response) 
 {
-    console.log('Token refresh.')
+    console.log('Token refresh.');
 }
 
 
@@ -135,7 +135,7 @@ export async function authenticatedCallback(req: Request, res: Response)
             // 2. Generate your own custom JWT app token (expires in 1 day)
             const token = jwt.sign(
                 { userId: user?._id, email: user?.email }, 
-                process.env.JWT_SECRET as string, 
+                process.env.LORE_RENDER_JWT_SECRET as string, 
                 { expiresIn: '15m'/* '1d' */ }
             );
 
