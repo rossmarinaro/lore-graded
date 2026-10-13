@@ -257,3 +257,8 @@ sync accounts while allowing data and user profiles to remain as is.
 Render backend webservice environment variable has been changed from JWT_SECRET to LORE_RENDER_JWT_SECRET.
 The developer does not have access to the value of LORE_RENDER_JWT_SECRET on the godaddy site. Confirm where the 
 developer can find this value - what method of deployment to godaddy and where to look. Which hosting plan (Shared cPanel, Node.js hosting, VPS) and programming language/framework are you deploying with?
+
+
+save this URL in your ChatGPT Action settings, the automatic background request triggers via this precise chain of events:
+https:api.loregraded.com/auth/oauth/token
+1. The Browser Redirect: Your Render backend executes your redirectToChatGPT function, redirecting the client's browser back to OpenAI's callback endpoint:

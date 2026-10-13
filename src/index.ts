@@ -5,6 +5,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import schedule from 'node-schedule';
 import express, { Request, Response } from 'express';
+import session from 'express-session';
 
 import { Database } from './database';
 import { authRouter } from './routes/auth';
@@ -20,6 +21,12 @@ const PORT = process.env.PORT || 3000;
 app.enable('trust proxy'); 
 app.use(express.json());
 app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET as string,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true } // True because Render uses HTTPS
+}));
 app.use(cors({ origin: [ process.env.WEB_URL as string, process.env.API_URL as string], credentials: true }));
 app.use('./app/', rateLimiter);
 app.use('/webhooks', webhookRouter);
@@ -51,5 +58,3 @@ Database.init().then(() => app.listen(PORT, () => {
   console.error(err);
   process.exit(-1);
 });
-
-
