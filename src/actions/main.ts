@@ -6,7 +6,6 @@ import { Order, Account, UserJwtPayload } from '../types/types'
 import { sendNotification } from '../notification'
 import { stripe } from '../stripe';
 import jwt from 'jsonwebtoken'
-//import { getUserID } from '../utils';
 
 
 //----------------------------------------------------
@@ -124,17 +123,19 @@ export async function purchaseGames (req: Request, res: Response)
     return;
   }
 
-  if (!req.body || !req.body.order_id) {
+  const { 
+    castleWar, 
+    sovereignHeist, 
+    shardDuel, 
+    order_id } = req.body;
+
+  if (!order_id || !castleWar || !sovereignHeist || !shardDuel) {
     console.error('purchaseGames :: Denied - Missing order_id in request body');
     return res.status(400).send('Bad Request: order_id is required.');
   }
 
   try {                  
-    const games = { 
-      castleWar: req.body.castleWar, 
-      sovereignHeist: req.body.sovereignHeist, 
-      shardDuel: req.body.shardDuel 
-    }; 
+    const games = { castleWar, sovereignHeist, shardDuel }; 
 
     const projection = { email: 1, phone: 1 };
 
@@ -145,9 +146,42 @@ export async function purchaseGames (req: Request, res: Response)
       projection
     );
 
-    if (account) {
-      sendNotification(account, 'submit');
-      res.redirect(302, `${ process.env.WEB_URL as string }`);
+    if (account) 
+    {
+      //handle stripe url to send back
+
+      const metadata = { castleWar, sovereignHeist, shardDuel };
+
+      const price = 100; //one dollar placeholder
+
+      const stripeSession = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          mode: 'payment',
+          success_url: process.env.GAMES_URL, 
+          cancel_url: process.env.GAMES_URL,
+          line_items: [
+            {
+              price_data: { 
+                currency: 'usd',
+                product_data: { name: 'loregraded' },
+                unit_amount: price,
+              },
+
+              //price: 'price_1N234567890',
+              quantity: 1
+            }
+          ],
+          metadata
+      });
+
+      console.log( 
+        'Checkout Success Link Generated: ', stripeSession.url, 
+        '\nTotal: ', price, 
+        '\nMetadata: ', JSON.stringify(account)
+      );
+
+      //sendNotification(account, 'submit');
+      res.status(200).send({ url: stripeSession.url });
     }
   }
   catch (error) {

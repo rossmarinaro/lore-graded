@@ -28,7 +28,7 @@ export async function sendNotification(account: Account, contextType: EmailConte
         }); 
 
         switch (contextType)
-        {
+        { 
             case 'submit':
     
                 subject = 'Submission Complete';
