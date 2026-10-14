@@ -40,11 +40,11 @@ app.use('./app/', rateLimiter);
 app.use('/webhooks', webhookRouter);
 app.use('/api2/auth', authRouter);
 app.use('/api2/api', verifyAuth, apiRouter);
-app.post('/api2/sync-user', syncUser);
 //serve files
 //app.use(express.static(path.join(__dirname, '../test')));
 
 app.get('/', (_req: Request, res: Response) => res.status(200).send('Welcome to Loregraded'));
+app.post('/api2/sync-user', syncUser);
 
 //start database and run application
 

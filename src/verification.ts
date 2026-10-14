@@ -24,14 +24,14 @@ function getToken (req: Request): string | null
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
         const token = req.headers.authorization.split(' ')[1];
-        console.log(token ? 'Retrieving token...' : 'No token present in header.');
+        console.log(token ? `Retrieving token: ${ token }` : 'No token present in header.');
         return token ?? null;
     }
 
     //fallback to cookies (web)
 
     else if (req.cookies && req.cookies.session_id)  {
-        console.log('Retrieving cookies...');
+        console.log('Retrieving cookies: ', req.cookies);
         return req.cookies.session_id;
     }
 
@@ -58,7 +58,7 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
         const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET as string) as UserJwtPayload,
               account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: decoded.userId });
 
-        if (!account) { console.log('decoded: ',decoded);
+        if (!account) { console.log('verifyAuth::decoded: ',decoded);
             return res.status(403).send('No account found to authorize.'); }
         else console.log(account._id);
         req.id = account._id;
