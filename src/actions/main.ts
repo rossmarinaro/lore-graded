@@ -53,6 +53,16 @@ export async function syncUser(req: Request, res: Response)
 
     console.log('Issuing new token: ', renderSessionToken);
 
+    const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
+    res.cookie('session_id', renderSessionToken, {
+        domain: isProd ? '.loregraded.com' : undefined, 
+        httpOnly: true,
+        secure: true, 
+        sameSite: isProd ? 'lax' : 'none', 
+        path: '/'
+    }).status(200);
+
     res.status(200).json({ success: true, token: renderSessionToken });
   } 
   catch (error) {
