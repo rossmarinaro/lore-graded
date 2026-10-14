@@ -95,6 +95,8 @@ console.log(req._id);
       sendNotification(account, 'submit');
       res.redirect(302, `${ process.env.WEB_URL as string }`);
     }
+    else 
+      res.status(302).send('Failed to associate account with queue.');
   }
   catch (error) {
     console.error('submitOrder::Error: ', error);
