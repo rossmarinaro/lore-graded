@@ -58,8 +58,8 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
         const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET as string) as UserJwtPayload,
               account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: decoded.userId });
 
-        if (!account) 
-            return res.status(403).send('No account found to authorize.');
+        if (!account) { console.log('decoded: ',decoded);
+            return res.status(403).send('No account found to authorize.'); }
         else console.log(account._id);
         req.id = account._id;
 
