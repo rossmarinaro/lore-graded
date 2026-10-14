@@ -42,9 +42,9 @@ export async function syncUser(req: Request, res: Response)
       throw new Error('CROSS_SERVICE_SECRET is not defined.');
 
     // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
-
-    const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
-
+    const token = syncToken.split(' ');
+    const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
+console.log('decoded: ',decoded)
     const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded._id) }, {}, {}, true); 
 
     //SESSION: Generate a standard session token for subsequent Render operations
