@@ -35,7 +35,7 @@ export async function logout (_req: Request, res: Response)
 export async function syncUser(req: Request, res: Response)
 { 
   const { token } = req.body;
-console.log(token)
+console.log(req.body)
   try 
   {
     if (!process.env.CROSS_SERVICE_SECRET)
