@@ -6,7 +6,7 @@ import { Order, Account, UserJwtPayload } from '../types/types'
 import { sendNotification } from '../notification'
 import { stripe } from '../stripe';
 import jwt from 'jsonwebtoken'
-import { getUserID } from '../utils';
+//import { getUserID } from '../utils';
 
 
 //----------------------------------------------------
@@ -46,12 +46,17 @@ export async function syncUser(req: Request, res: Response)
     // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
     //const token = syncToken.split(' ');
     const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
-  console.log("Keys inside this token:", Object.keys(decoded));
-    const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded._id) }, {}, {}, true); 
+    //console.log("Keys inside this token:", Object.keys(decoded));
+    const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { email: decoded.email }, {}, {}, true); 
 
     //SESSION: Generate a standard session token for subsequent Render operations
 
-    const renderSessionToken = jwt.sign({ userId: user?._id }, process.env.CROSS_SERVICE_SECRET, { expiresIn: '30d' });
+    if (!user) {
+      res.status(401).json({ error: 'Problem accessing database.' });
+      return;
+    }
+
+    const renderSessionToken = jwt.sign({ userId: user._id }, process.env.CROSS_SERVICE_SECRET, { expiresIn: '30d' });
 
     console.log('Issuing new token: ', renderSessionToken);
 
