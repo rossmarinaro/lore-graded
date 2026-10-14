@@ -42,15 +42,16 @@ export async function syncUser(req: Request, res: Response)
       throw new Error('CROSS_SERVICE_SECRET is not defined.');
 
     // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
-    // If a user tries to forge an email or tamper with the payload, verification fails.
+
     const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
 
-    const projection = { email: 1, phone: 1 };
-    const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded._id) }, {}, projection, true); 
+    const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded._id) }, {}, {}, true); 
 
     //SESSION: Generate a standard session token for subsequent Render operations
 
     const renderSessionToken = jwt.sign({ userId: user?._id }, process.env.CROSS_SERVICE_SECRET, { expiresIn: '30d' });
+
+    console.log('Issuing new token: ', renderSessionToken);
 
     res.status(200).json({ success: true, token: renderSessionToken });
   } 
