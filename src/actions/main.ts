@@ -44,8 +44,7 @@ export async function syncUser(req: Request, res: Response)
     console.log('Syncing user...');
 
     // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
-    //const token = syncToken.split(' ');
-    const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
+    const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload; 
     //console.log("Keys inside this token:", Object.keys(decoded));
     const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { email: decoded.email }, {}, {}, true); 
 
@@ -100,10 +99,10 @@ console.log(req._id);
 
     if (account) {
       sendNotification(account, 'submit');
-      res.redirect(302, `${ process.env.WEB_URL as string }`);
+      res.status(200).send(`Order ${ order_id } added to the queue.`);
     }
     else 
-      res.status(302).send('Failed to associate account with queue.');
+      res.status(302).send('Failed to associate account with order queue.');
   }
   catch (error) {
     console.error('submitOrder::Error: ', error);
