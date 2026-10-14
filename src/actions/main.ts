@@ -77,26 +77,19 @@ export async function syncUser(req: Request, res: Response)
 
 export async function submitOrderToQueue (req: Request, res: Response)  
 {
-  console.log('submitOrder: ', req.body);
-
   const { user_id, order_id, queue_timestamp } = req.body;
 
   if (!user_id || !order_id) {
     console.error('submitOrderToQueue :: Denied - Missing user_id or order_id in request body');
     return res.status(400).send('Bad Request: user_id and order_id are required.');
   }
-
+  else   
+    console.log('Submitting order: ', order_id);
+console.log(req._id);
   try {                  
-    const order: Order = { user_id, order_id, time_stamp: queue_timestamp};
-
+    const order: Order = { user_id, order_id, time_stamp: queue_timestamp };
     const projection = { email: 1, phone: 1 };
-
-    const account = await Database.findOneAndUpdate(
-      process.env.MONGODB_COLLECTION as string, 
-      { _id: req._id }, 
-      { order }, 
-      projection
-    );
+    const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: req._id }, { order }, projection);
 
     if (account) {
       sendNotification(account, 'submit');
