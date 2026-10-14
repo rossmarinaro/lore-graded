@@ -33,7 +33,7 @@ export async function logout (_req: Request, res: Response)
 
 
 export async function syncUser(req: Request, res: Response)
-{ console.log('syncing user...')
+{ 
   const { syncToken } = req.body;
 
   try 
@@ -41,9 +41,11 @@ export async function syncUser(req: Request, res: Response)
     if (!process.env.CROSS_SERVICE_SECRET)
       throw new Error('CROSS_SERVICE_SECRET is not defined.');
 
+    console.log('Syncing user...');
+
     // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
-    const token = syncToken.split(' ');
-    const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
+    //const token = syncToken.split(' ');
+    const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
   console.log("Keys inside this token:", Object.keys(decoded));
     const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded._id) }, {}, {}, true); 
 
