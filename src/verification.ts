@@ -22,7 +22,8 @@ const oAuth2Client = new OAuth2Client(
 function getToken (req: Request): string | null
 {
     //mobile token
-console.log(req.headers, req.body)
+console.log(req.headers)
+console.log(req.body)
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
         const token = req.headers.authorization.split(' ')[1];
         console.log(token ? 'Retrieving token...' : 'No token present in header.');
