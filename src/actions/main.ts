@@ -2,10 +2,11 @@ require('dotenv').config();
 
 import { Database } from '../database'
 import { Request, Response } from 'express'
-import { Order, SyncRequestBody, Account } from '../types/types'
+import { Order, Account, UserJwtPayload } from '../types/types'
 import { sendNotification } from '../notification'
-import { AnyBulkWriteOperation } from 'mongodb';
 import { stripe } from '../stripe';
+import jwt from 'jsonwebtoken'
+import { getUserID } from '../utils';
 
 
 //----------------------------------------------------
@@ -31,61 +32,32 @@ export async function logout (_req: Request, res: Response)
 //-----------------------------------------------
 
 
-export async function syncUsers(req: Request, res: Response)
+export async function syncUser(req: Request, res: Response)
 { 
+  const { token } = req.body;
+
   try 
   {
-    const { collection, documents } = req.body as SyncRequestBody;
+    if (!process.env.CROSS_SERVICE_SECRET)
+      throw new Error('CROSS_SERVICE_SECRET is not defined.');
 
-    if (!collection || !Array.isArray(documents)) {
-      res.status(400).json({ error: `Invalid payload layout. 'collection' and 'documents' are required.` });
-      return;
-    }
-    
-    const dbCollection = Database.client.db(process.env.MONGODB_DATABASE).collection(collection);
+    // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
+    // If a user tries to forge an email or tamper with the payload, verification fails.
+    const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
 
-    //Build flexible operations depending on what data actually arrived
+    const projection = { email: 1, phone: 1 };
+    const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded._id) }, {}, projection, true); 
 
-    const bulkOps: AnyBulkWriteOperation[] = documents.map(doc => {
+    //SESSION: Generate a standard session token for subsequent Render operations
 
-      const sqlId = doc.metadata?.originalSqlId;
+    const renderSessionToken = jwt.sign({ userId: user?._id }, process.env.CROSS_SERVICE_SECRET, { expiresIn: '30d' });
 
-      if (sqlId !== undefined && sqlId !== null) {
-        // If an ID exists, update an existing record or insert a new one
-        return {
-          updateOne: {
-            filter: { 'metadata.originalSqlId': sqlId },
-            // ✅ Removed the backslash completely. Native operator is cleanly declared.
-            update: { $set: doc }, 
-            upsert: true
-          }
-        };
-      } 
-      else // Fallback: If no ID was found, just blindly insert
-        return {
-          insertOne: { document: doc }
-        };
-    });
-
-    if (bulkOps.length === 0) {
-      res.json({ status: 'Success', message: 'No documents provided to write.' });
-      return;
-    }
-
-    // Execute the database modifications in a single high-performance pipeline roundtrip
-    const result = await dbCollection.bulkWrite(bulkOps, { ordered: false });
-    
-    res.json({ 
-      status: 'Success', 
-      matched: result.matchedCount, 
-      upserted: result.upsertedCount,
-      inserted: result.insertedCount
-    });
+    res.status(200).json({ success: true, token: renderSessionToken });
   } 
-  catch (err) {
-    console.error('❌ Synchronization backend error:', err);
-    res.status(500).send({ error: 'Internal Server Error' });
+  catch (error) {
+    res.status(401).json({ error: 'Tampered or expired cross-service token' });
   }
+
 }
 
 

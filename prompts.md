@@ -262,3 +262,8 @@ developer can find this value - what method of deployment to godaddy and where t
 save this URL in your ChatGPT Action settings, the automatic background request triggers via this precise chain of events:
 https:api.loregraded.com/auth/oauth/token
 1. The Browser Redirect: Your Render backend executes your redirectToChatGPT function, redirecting the client's browser back to OpenAI's callback endpoint:
+
+
+
+
+"Modify my frontend's login execution flow. I need you to securely store a cross-service handshake secret key as an internal, backend-only server variable. Name this secret CROSS_SERVICE_SECRET. Set its value to: 8VDMMxfzVboTvr0oF2D4r4cUVkmuABoQQU14ocLngcM. When a user completes the 'Sign in with ChatGPT' callback and is logged into our database, use this secret to sign a short-lived, 5-minute JWT (syncToken) containing the user's email and name. Have the frontend browser automatically execute a background POST fetch request sending that syncToken to https://api.loregraded.com/api2/sync-user immediately before loading the dashboard page."
