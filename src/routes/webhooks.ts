@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { paymentHook } from '../actions/main';
+import { checkoutPaymentHook, gamePaymentHook } from '../actions/main';
 
 export const webhookRouter = Router();
 
-webhookRouter.post('/payment', paymentHook);
+webhookRouter.post('/checkout-payment', checkoutPaymentHook);
+webhookRouter.post('/game-payment', gamePaymentHook);

@@ -172,20 +172,20 @@ export async function checkout (account: Account)
 //----------------------------------
 
 
-export async function paymentHook (req: Request, res: Response) 
+export async function checkoutPaymentHook (req: Request, res: Response) 
 { 
   try {
 
     const event = req.body, 
           webhookSession: Account = JSON.parse(event.data.object.metadata[0]); 
+    
+    const _id = webhookSession._id;
+    const projection = { email: 1 };
 
     switch (event.type) 
     {
       case 'checkout.session.completed':
-
-        const _id = webhookSession._id;
-        const projection = { email: 1 };
-
+      {
         const account = await Database.findOneAndUpdate(
           process.env.MONGODB_COLLECTION as string,
           { _id }, 
@@ -201,7 +201,7 @@ export async function paymentHook (req: Request, res: Response)
 
           sendNotification(webhookSession, 'purchase.complete');
         }
-
+      }
       break;
 
       default: console.log(`Unhandled event type: ${ event.type }`); 
@@ -210,10 +210,62 @@ export async function paymentHook (req: Request, res: Response)
   }
 
   catch(error) {
-    console.error('paymentHook::Error: ', error);
+    console.error('checkoutPaymentHook::Error: ', error);
   }
 
   res.json({ received: true });
 }
+
+
+
+//--------------------------------------------------
+
+
+
+export async function gamePaymentHook (req: Request, res: Response) 
+{ 
+  try {
+
+    const event = req.body, 
+          webhookSession: Account = JSON.parse(event.data.object.metadata[0]); 
+    
+    const _id = webhookSession._id;
+    const projection = { email: 1 };
+
+    switch (event.type) 
+    {
+      case 'checkout.session.completed':
+      {
+        const account = await Database.findOneAndUpdate(
+          process.env.MONGODB_COLLECTION as string,
+          { _id }, 
+          projection, 
+          { paid: true }
+        );
+
+        if (account)
+        {
+          console.log(`user: ${ account.email } paid. Sending notification.`);
+            
+          //send confirmation email / SMS
+
+          sendNotification(webhookSession, 'purchase.complete');
+        }
+      }
+      break;
+
+      default: console.log(`Unhandled event type: ${ event.type }`); 
+      break;
+    }
+  }
+
+  catch(error) {
+    console.error('gamePaymentHook::Error: ', error);
+  }
+
+  res.json({ received: true });
+}
+
+
 
 
