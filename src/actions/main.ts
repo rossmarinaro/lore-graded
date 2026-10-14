@@ -59,7 +59,7 @@ export async function syncUser(req: Request, res: Response)
         domain: isProd ? '.loregraded.com' : undefined, 
         httpOnly: true,
         secure: true, 
-        sameSite: /* isProd ? 'lax' :  */'none', 
+        sameSite: 'none', 
         path: '/'
     }).status(200);
 

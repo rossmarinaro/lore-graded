@@ -21,9 +21,7 @@ const oAuth2Client = new OAuth2Client(
 function getToken (req: Request): string | null
 {
     //mobile token
-console.log(req.headers)
-console.log(req.body)
-console.log(req.cookies)
+
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
         const token = req.headers.authorization.split(' ')[1];
         console.log(token ? 'Retrieving token...' : 'No token present in header.');
@@ -57,7 +55,7 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
         return res.status(401).send('Access denied. No token provided.');
 
     try {
-        const decoded = jwt.verify(token, process.env.LORE_RENDER_JWT_SECRET as string) as UserJwtPayload,
+        const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET as string) as UserJwtPayload,
               account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded.userId )});
                 
         if (!account) 
@@ -179,7 +177,7 @@ export async function authenticatedCallback(req: Request, res: Response)
 
             const token = jwt.sign(
                 { userId: user?._id, email: user?.email }, 
-                process.env.LORE_RENDER_JWT_SECRET as string, 
+                process.env.CROSS_SERVICE_SECRET as string, 
                 { expiresIn: '15m'/* '1d' */ }
             );
 
