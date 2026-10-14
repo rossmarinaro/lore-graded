@@ -59,7 +59,7 @@ export async function syncUser(req: Request, res: Response)
         domain: isProd ? '.loregraded.com' : undefined, 
         httpOnly: true,
         secure: true, 
-        sameSite: isProd ? 'lax' : 'none', 
+        sameSite: /* isProd ? 'lax' :  */'none', 
         path: '/'
     }).status(200);
 
@@ -109,6 +109,52 @@ export async function submitOrderToQueue (req: Request, res: Response)
   }
   catch (error) {
     console.error('submitOrder::Error: ', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+//----------------------------------------------------
+
+
+export async function purchaseGames (req: Request, res: Response)  
+{
+  console.log('purchaseGames: ', req.body);
+
+  if (!req._id) {
+    console.error('purchaseGames :: Denied - Unauthorized request or missing ID');
+    res.status(401).send('Unauthorized.');
+    return;
+  }
+
+  if (!req.body || !req.body.order_id) {
+    console.error('purchaseGames :: Denied - Missing order_id in request body');
+    return res.status(400).send('Bad Request: order_id is required.');
+  }
+
+  try {                  
+    const games = { 
+      castleWar: req.body.castleWar, 
+      sovereignHeist: req.body.sovereignHeist, 
+      shardDuel: req.body.shardDuel 
+    }; 
+
+    const projection = { email: 1, phone: 1 };
+
+    const account = await Database.findOneAndUpdate(
+      process.env.MONGODB_COLLECTION as string, 
+      { _id: req._id }, 
+      { games }, 
+      projection
+    );
+
+    if (account) {
+      sendNotification(account, 'submit');
+      res.redirect(302, `${ process.env.WEB_URL as string }`);
+    }
+  }
+  catch (error) {
+    console.error('purchaseGames::Error: ', error);
     res.status(500).send('Internal Server Error');
   }
 }

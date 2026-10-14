@@ -5,8 +5,8 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import schedule from 'node-schedule';
 import express, { Request, Response } from 'express';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
+//import session from 'express-session';
+//import MongoStore from 'connect-mongo';
 
 import { Database } from './database';
 import { authRouter } from './routes/auth';
@@ -22,20 +22,20 @@ const PORT = process.env.PORT || 3000;
 
 app.enable('trust proxy'); 
 app.use(express.json());
-app.use(cookieParser());
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_fallback_secret',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_ATLAS_URI, // Your database connection string
-    ttl: 14 * 24 * 60 * 60 // Sessions expire in 14 days
-  }),
-  cookie: { secure: process.env.NODE_ENV === 'production' }
-}));
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || 'your_fallback_secret',
+//   resave: false,
+//   saveUninitialized: false,
+//   store: MongoStore.create({
+//     mongoUrl: process.env.MONGODB_ATLAS_URI, // Your database connection string
+//     ttl: 14 * 24 * 60 * 60 // Sessions expire in 14 days
+//   }),
+//   cookie: { secure: process.env.NODE_ENV === 'production' }
+// }));
 
 app.use(cors({ origin: [ process.env.WEB_URL as string, process.env.API_URL as string], credentials: true }));
+app.use(cookieParser());
 app.use('./app/', rateLimiter);
 app.use('/webhooks', webhookRouter);
 app.use('/api2/auth', authRouter);

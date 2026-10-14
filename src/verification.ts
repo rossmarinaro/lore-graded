@@ -19,7 +19,7 @@ const oAuth2Client = new OAuth2Client(
 
 
 function getToken (req: Request): string | null
-{console.log("!")
+{
     //mobile token
 console.log(req.headers)
 console.log(req.body)

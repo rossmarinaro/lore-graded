@@ -239,31 +239,9 @@ Option B: Render Proxy	The GoDaddy frontend sends requests back to Render with t
 🔴 Render needs direct network access to your remote SQL DB.
 
 
-Render sign in workflow successfully signs user in. App dashboard under submit my cards still remains "Account unavailable". "Your login is verified, but its existing LORE account still needs to be linked."
-render-session.js?v=20261012-bearer:31  POST https://loregraded.com/api/session 409 (Conflict) error when auth callback
-is fired and redirects the user to loregraded.com. Link lore account verification to the jwt returned from authorization.
-write an interceptor (like an Axios interceptor). Propose a solution wher if an API request fails with a 401 Unauthorized due to an expired token, the frontend instantly hits a hidden /api2/auth/refresh endpoint.
-fix this and allow a user access to their lore account when logged into the render service that returns a jwt.
-
-
-Refresh endpoint is being implemented but log in takes us in circles. Provide a detailed concise summary 
-of the proper solution to login to the webservice and have it use the credentials to log onto loregraded. Features like
-submissions are still blocked
-
-Render app sends a JWT on log in, take this token and verify it with a loregraded account, or create one. If the gpt generated
-app needs a matching secret key to use as an environment variable, let us know. We want our login to be on the webservice and
-sync accounts while allowing data and user profiles to remain as is. 
-
-Render backend webservice environment variable has been changed from JWT_SECRET to LORE_RENDER_JWT_SECRET.
-The developer does not have access to the value of LORE_RENDER_JWT_SECRET on the godaddy site. Confirm where the 
-developer can find this value - what method of deployment to godaddy and where to look. Which hosting plan (Shared cPanel, Node.js hosting, VPS) and programming language/framework are you deploying with?
-
-
-save this URL in your ChatGPT Action settings, the automatic background request triggers via this precise chain of events:
-https:api.loregraded.com/auth/oauth/token
-1. The Browser Redirect: Your Render backend executes your redirectToChatGPT function, redirecting the client's browser back to OpenAI's callback endpoint:
+When a user runs out of free games for a day, make a request to https://api.loregraded.com/api2/api/request-cards with credentials: "include" in the request body. The render webservice will then respond with a stripe link. When a user pays, 
+a webhook will trigger on the render backend to establish an event signaling a completed transaction. The available game rounds
+purchased by the user need to be sent to the frontend. Which endpoint does the renderbackend need to send this data representing purchased game rounds does this need to be requested to?
 
 
 
-
-"Modify my frontend's login execution flow. I need you to securely store a cross-service handshake secret key as an internal, backend-only server variable. Name this secret CROSS_SERVICE_SECRET. Set its value to: 8VDMMxfzVboTvr0oF2D4r4cUVkmuABoQQU14ocLngcM. When a user completes the 'Sign in with ChatGPT' callback and is logged into our database, use this secret to sign a short-lived, 5-minute JWT (syncToken) containing the user's email and name. Have the frontend browser automatically execute a background POST fetch request sending that syncToken to https://api.loregraded.com/api2/sync-user immediately before loading the dashboard page."
