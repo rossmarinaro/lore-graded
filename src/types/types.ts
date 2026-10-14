@@ -8,6 +8,7 @@ export interface MongoDBOptions {
 } 
 
 export interface Order {
+  user_id: string;
   order_id: string; //sql id
   time_stamp: Date;
 };

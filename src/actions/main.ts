@@ -79,19 +79,15 @@ export async function submitOrderToQueue (req: Request, res: Response)
 {
   console.log('submitOrder: ', req.body);
 
-  if (!req._id) {
-    console.error('submitOrderToQueue :: Denied - Unauthorized request or missing ID');
-    res.status(401).send('Unauthorized.');
-    return;
-  }
+  const { user_id, order_id, queue_timestamp } = req.body;
 
-  if (!req.body || !req.body.order_id) {
-    console.error('submitOrderToQueue :: Denied - Missing order_id in request body');
-    return res.status(400).send('Bad Request: order_id is required.');
+  if (!user_id || !order_id) {
+    console.error('submitOrderToQueue :: Denied - Missing user_id or order_id in request body');
+    return res.status(400).send('Bad Request: user_id and order_id are required.');
   }
 
   try {                  
-    const order: Order = { order_id: req.body.order_id, time_stamp: new Date() };
+    const order: Order = { user_id, order_id, time_stamp: queue_timestamp};
 
     const projection = { email: 1, phone: 1 };
 
