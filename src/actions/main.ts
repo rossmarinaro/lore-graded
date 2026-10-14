@@ -33,7 +33,7 @@ export async function logout (_req: Request, res: Response)
 
 
 export async function syncUser(req: Request, res: Response)
-{ 
+{ console.log('syncing user...')
   const { syncToken } = req.body;
 
   try 
@@ -44,7 +44,7 @@ export async function syncUser(req: Request, res: Response)
     // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
     const token = syncToken.split(' ');
     const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload;
-console.log('decoded: ',decoded)
+  console.log("Keys inside this token:", Object.keys(decoded));
     const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded._id) }, {}, {}, true); 
 
     //SESSION: Generate a standard session token for subsequent Render operations
