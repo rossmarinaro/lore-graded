@@ -38,15 +38,3 @@ export interface UserJwtPayload extends jwt.JwtPayload {
 }
 
 export type EmailContextType = 'submit' | 'purchase.complete' | 'purchase.offered';
-
-export interface OpenAIState {
-  isGptFlow?: boolean;
-  state: string;
-  redirect_uri: string;
-}
-
-export interface GoogleAuthQuery {
-  error?: string;
-  code: string;
-  state: string;
-}
