@@ -15,6 +15,7 @@ import { apiRouter } from './routes/api';
 import { rateLimiter } from './rateLimiter';
 import { webhookRouter } from './routes/webhooks';
 import { sendTargetedNotifications } from './notification';
+import { syncUser } from './actions/main';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,7 +40,7 @@ app.use('./app/', rateLimiter);
 app.use('/webhooks', webhookRouter);
 app.use('/api2/auth', authRouter);
 app.use('/api2/api', verifyAuth, apiRouter);
-
+app.post('/api2/sync-user', syncUser);
 //serve files
 //app.use(express.static(path.join(__dirname, '../test')));
 
