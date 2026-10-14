@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 declare global {
   namespace Express {
     interface Request {
-      _id?: ObjectId; 
+      id?: ObjectId; 
       session?: any;
       cookies: {
         session_id?: string;

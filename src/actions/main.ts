@@ -90,11 +90,11 @@ export async function submitOrderToQueue (req: Request, res: Response)
   }
   else   
     console.log('Submitting order: ', order_id);
-console.log(req._id);
+console.log('req.id: ',req.id);
   try {                  
     const order: Order = { user_id, order_id, time_stamp: queue_timestamp };
     const projection = { email: 1, phone: 1 };
-    const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: req._id }, { order }, projection);
+    const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: req.id }, { order }, projection);
 
     if (account) {
       sendNotification(account, 'submit');
@@ -117,7 +117,7 @@ export async function purchaseGames (req: Request, res: Response)
 {
   console.log('purchaseGames: ', req.body);
 
-  if (!req._id) {
+  if (!req.id) {
     console.error('purchaseGames :: Denied - Unauthorized request or missing ID');
     res.status(401).send('Unauthorized.');
     return;
@@ -141,7 +141,7 @@ export async function purchaseGames (req: Request, res: Response)
 
     const account = await Database.findOneAndUpdate(
       process.env.MONGODB_COLLECTION as string, 
-      { _id: req._id }, 
+      { _id: req.id }, 
       { games }, 
       projection
     );

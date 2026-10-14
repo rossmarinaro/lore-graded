@@ -61,7 +61,7 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
         if (!account) 
             return res.status(403).send('No account found to authorize.');
         else console.log(account._id);
-        req._id = account._id;
+        req.id = account._id;
 
         next();
     } 
