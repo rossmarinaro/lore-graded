@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { checkoutPaymentHook, gamePaymentHook } from '../actions/main';
+import { checkoutPaymentHook, gamePaymentHook } from '../actions/webhooks';
 
 export const webhookRouter = Router();
 
