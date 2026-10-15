@@ -91,18 +91,25 @@ export async function submitOrderToQueue (req: Request, res: Response)
   }
   else   
     console.log('Submitting order: ', order_id);
-console.log('req.id: ',req.id);
+
   try {                  
     const order: Order = { user_id, order_id, time_stamp: queue_timestamp };
-    const projection = { email: 1, phone: 1 };  const id = req.id?.toString(); if (!id) return;
+    const projection = { email: 1, phone: 1 };  
+    const id = req.id?.toString(); 
+
+    if (!id) 
+      return;
+
     const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(id) }, { order }, projection);
 
-    if (account) { console.log('notification::')
+    if (account) { 
       sendNotification(account, 'submit');
       res.status(200).send(`Order ${ order_id } added to the queue.`);
     }
-    else 
-      {console.log('failed to associate order::');res.status(302).send('Failed to associate account with order queue.'); }
+    else {
+      console.log('Failed to associate order to queue.');
+      res.status(302).send('Failed to associate account with order queue.'); 
+    }
   }
   catch (error) {
     console.error('submitOrder::Error: ', error);

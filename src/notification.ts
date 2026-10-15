@@ -9,6 +9,8 @@ import { checkout } from './actions/main';
 
 export async function sendNotification(account: Account, contextType: EmailContextType) 
 {
+    const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
     try {
 
         /********************* EMAIL */ 
@@ -18,8 +20,8 @@ export async function sendNotification(account: Account, contextType: EmailConte
     
         const transporter = nodemailer.createTransport ({
             host: process.env.SMTP_HOST,
-            port: 587,
-            secure: false, // true for 465, false for other ports
+            port: isProd ? 465 : 587,
+            secure: isProd, // true for 465, false for other ports
             auth: {
                 user: process.env.SMTP_USER, // proxy email
                 pass: process.env.SMTP_PASS, // smtp key
