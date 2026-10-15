@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import { ObjectId } from 'mongodb';
 import Stripe from 'stripe'
 
@@ -35,9 +34,5 @@ export interface Account {
   paid?: boolean;
   orders?: Order[];
 };
-
-export interface UserJwtPayload extends jwt.JwtPayload {
-  _id: string;
-}
 
 export type EmailContextType = 'submit' | 'purchase.complete' | 'purchase.offered';

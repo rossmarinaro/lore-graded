@@ -3,7 +3,6 @@ require('dotenv').config();
 import jwt from 'jsonwebtoken'
 import { Database } from '../database'
 import { Request, Response } from 'express'
-import { UserJwtPayload } from '../types/types'
 import { sendNotification } from '../notification'
 import { getUserID } from '../utils';
 
@@ -44,7 +43,7 @@ export async function syncUser(req: Request, res: Response)
 
     //verify that frontend-backend (gpt site) signed this token
 
-    const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload; 
+    const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as jwt.JwtPayload;
 
     //console.log("Keys inside this token:", Object.keys(decoded));
 
@@ -89,7 +88,19 @@ export async function syncUser(req: Request, res: Response)
 
 export async function submitOrderToQueue (req: Request, res: Response)  
 {
-  const { user_id, order_id, queue_timestamp } = req.body;
+  const { 
+    user_id, 
+    order_id, 
+    queue_timestamp,
+    phone,
+    recipient,
+    street,
+    apartment,
+    city,
+    zip,
+    state,
+    country 
+  } = req.body;
 
   if (!user_id || !order_id) {
     console.error('submitOrderToQueue :: Denied - Missing user_id or order_id in request body');
@@ -105,29 +116,31 @@ export async function submitOrderToQueue (req: Request, res: Response)
     //temp product data TODO: look up actual mapped prices to card submissions
 
     const line_items = [
-        {
-            price_data: { 
-                currency: 'usd',
-                product_data: {
-                    name: 'loregraded',
-                    metadata: {
-                      //todo: add mapped data for card submissions
-                    }
-                },
-                unit_amount: 100, //one dollar placeholder
+      {
+        price_data: { 
+            currency: 'usd',
+            product_data: {
+                name: 'loregraded',
+                metadata: {
+                  //todo: add mapped data for card submissions
+                }
             },
-            quantity: 1
-        }
+            unit_amount: 100, //one dollar placeholder
+        },
+        quantity: 1
+      }
     ];
 
     const order = { user_id, order_id, line_items, time_stamp: queue_timestamp };
-    const projection = { email: 1, phone: 1 };  
     const id = req.id?.toString(); 
 
     if (!id) 
       return;
 
-    const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(id) }, { order }, projection);
+    const updateParams = { phone, recipient, street, apartment, city, zip, state, country, order };
+
+    const projection = { email: 1, phone: 1 };  
+    const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(id) }, updateParams, projection);
 
     //send notifications
 
