@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 
 import { Request, Response, NextFunction } from 'express'
 import { Database } from './database'
-import { UserJwtPayload } from './types/types'
 import { OAuth2Client } from 'google-auth-library'
 import { getUserID } from './utils';
 
@@ -56,7 +55,7 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
         return res.status(401).send('Access denied. No token provided.');
 
     try {
-        const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET as string) as UserJwtPayload,
+        const decoded = jwt.verify(token, process.env.CROSS_SERVICE_SECRET as string) as jwt.JwtPayload,
               account = await Database.findOne(process.env.MONGODB_COLLECTION as string, { _id: getUserID(decoded.userId) });
 
         if (!account) {
