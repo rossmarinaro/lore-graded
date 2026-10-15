@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { ObjectId } from 'mongodb';
+import Stripe from 'stripe'
 
 export interface MongoDBOptions {
   maxPoolSize: number;
@@ -9,8 +10,9 @@ export interface MongoDBOptions {
 
 export interface Order {
   user_id: string;
-  order_id: string; //sql id
-  time_stamp: Date;
+  order_id: string; 
+  time_stamp: string | number | null;
+  line_items: Stripe.Checkout.SessionCreateParams.LineItem[];
 };
 
 export interface SyncRequestBody {

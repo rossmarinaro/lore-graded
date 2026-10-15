@@ -118,33 +118,6 @@ export async function authenticate (req: Request, res: Response)
         console.error('authenticate::Error: ', error);
         res.status(500).send('Authentication failed.');
     }
-
-    // const { client_id, redirect_uri, state } = req.query;
-
-    // // Validate the request from ChatGPT
-    // if (client_id !== process.env.CHATGPT_CLIENT_ID || redirect_uri !== process.env.CHATGPT_REDIRECT_URI) 
-    //     return res.status(400).send('Invalid client parameters.');
-
-    // // Save parameters to session memory
-    // req.session.oauthState = { 
-    //     state: state as string, 
-    //     redirect_uri: redirect_uri as string 
-    // };
-
-    // // 🔥 USE CASE 1: Instant Single Sign-On
-    // if (req.session.userId) 
-    //     return redirectToChatGPT(req, res); // Skips the login page entirely!
-
-    // const scope = ['openid', 'profile', 'email'];
-    // // If not logged in, pass them along to Google Sign-In
-    // const googleAuthUrl = oAuth2Client.generateAuthUrl({
-    //     access_type: 'offline', // Generates a refresh token for extended access
-    //     prompt: 'consent',     // Forces refresh token generation on re-auth
-    //     scope,
-    //     include_granted_scopes: true
-    // });
-
-    // res.redirect(googleAuthUrl);
 }
 
 

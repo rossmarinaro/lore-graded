@@ -1,11 +1,10 @@
 require('dotenv').config();
 
+import jwt from 'jsonwebtoken'
 import { Database } from '../database'
 import { Request, Response } from 'express'
-import { Order, Account, UserJwtPayload } from '../types/types'
+import { UserJwtPayload } from '../types/types'
 import { sendNotification } from '../notification'
-import { stripe } from '../stripe';
-import jwt from 'jsonwebtoken'
 import { getUserID } from '../utils';
 
 
@@ -18,7 +17,7 @@ export async function logout (_req: Request, res: Response)
     res.clearCookie('session_id', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax'
+      sameSite: 'none'
     });
     res.redirect(302, process.env.WEB_URL as string);
   }
@@ -43,9 +42,12 @@ export async function syncUser(req: Request, res: Response)
 
     console.log('Syncing user...');
 
-    // 🔒 SECURE: Cryptographically verify that your frontend backend signed this token
+    //verify that frontend-backend (gpt site) signed this token
+
     const decoded = jwt.verify(syncToken, process.env.CROSS_SERVICE_SECRET) as UserJwtPayload; 
+
     //console.log("Keys inside this token:", Object.keys(decoded));
+
     const user = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { email: decoded.email }, {}, {}, true); 
 
     //SESSION: Generate a standard session token for subsequent Render operations
@@ -61,6 +63,8 @@ export async function syncUser(req: Request, res: Response)
 
     const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
+    //return cookies
+
     res.cookie('session_id', renderSessionToken, {
         domain: isProd ? '.loregraded.com' : undefined, 
         httpOnly: true,
@@ -68,6 +72,8 @@ export async function syncUser(req: Request, res: Response)
         sameSite: 'none', 
         path: '/'
     }).status(200);
+
+    //return token
 
     res.status(200).json({ success: true, token: renderSessionToken });
   } 
@@ -92,8 +98,29 @@ export async function submitOrderToQueue (req: Request, res: Response)
   else   
     console.log('Submitting order: ', order_id);
 
-  try {                  
-    const order: Order = { user_id, order_id, time_stamp: queue_timestamp };
+  try {    
+    
+    //submit order to queue, enter in database
+
+    //temp product data TODO: look up actual mapped prices to card submissions
+
+    const line_items = [
+        {
+            price_data: { 
+                currency: 'usd',
+                product_data: {
+                    name: 'loregraded',
+                    metadata: {
+                      //todo: add mapped data for card submissions
+                    }
+                },
+                unit_amount: 100, //one dollar placeholder
+            },
+            quantity: 1
+        }
+    ];
+
+    const order = { user_id, order_id, line_items, time_stamp: queue_timestamp };
     const projection = { email: 1, phone: 1 };  
     const id = req.id?.toString(); 
 
@@ -102,9 +129,12 @@ export async function submitOrderToQueue (req: Request, res: Response)
 
     const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(id) }, { order }, projection);
 
+    //send notifications
+
     if (account) { 
-      sendNotification(account, 'submit');
       res.status(200).send(`Order ${ order_id } added to the queue.`);
+      const to = await sendNotification(account, 'submit');
+      console.log('Successfully sent notifications to: ', to);
     }
     else {
       console.log('Failed to associate order to queue.');
@@ -143,54 +173,53 @@ export async function purchaseGames (req: Request, res: Response)
   }
 
   try {                  
-    const games = { castleWar, sovereignHeist, shardDuel }; 
 
-    const projection = { email: 1, phone: 1 };
+    //temp product data
 
-    const account = await Database.findOneAndUpdate(
-      process.env.MONGODB_COLLECTION as string, 
-      { _id: req.id }, 
-      { games }, 
-      projection
-    );
+    // const line_items = [
+    //     {
+    //       price_data: { 
+    //           currency: 'usd',
+    //           product_data: {
+    //               name: 'loregraded',
+    //               metadata: {
+    //                 castleWar, sovereignHeist, shardDuel
+    //               }
+    //           },
+    //           unit_amount: 100, //one dollar placeholder
+    //       },
+          
+    //       //price: 'price_1N234567890',
+    //       quantity: 1
+    //     }
+    // ];
 
-    if (account) 
-    {
-      //handle stripe url to send back
+    // const projection = { email: 1, phone: 1 };
 
-      const metadata = { castleWar, sovereignHeist, shardDuel };
+    // const account = await Database.findOneAndUpdate(
+    //   process.env.MONGODB_COLLECTION as string, 
+    //   { _id: req.id }, 
+    //   { line_items }, 
+    //   projection
+    // );
 
-      const price = 100; //one dollar placeholder
+    // if (account) 
+    // {
+    //   //handle stripe url to send back
 
-      const stripeSession = await stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
-          mode: 'payment',
-          success_url: process.env.GAMES_URL, 
-          cancel_url: process.env.GAMES_URL,
-          line_items: [
-            {
-              price_data: { 
-                currency: 'usd',
-                product_data: { name: 'loregraded' },
-                unit_amount: price,
-              },
+    //   const stripeUrl = await checkout(account, process.env.GAMES_URL as string);
 
-              //price: 'price_1N234567890',
-              quantity: 1
-            }
-          ],
-          metadata
-      });
+    //   if (!stripeUrl) {
+    //     console.log('There was a problem issuing a stripe checkout link.');
+    //     return;
+    //   }
 
-      console.log( 
-        'Checkout Success Link Generated: ', stripeSession.url, 
-        '\nTotal: ', price, 
-        '\nMetadata: ', JSON.stringify(account)
-      );
+    //   console.log('Checkout Success Link Generated: ', stripeUrl, '\nMetadata: ', JSON.stringify(account));
 
-      //sendNotification(account, 'submit');
-      res.status(200).send({ url: stripeSession.url });
-    }
+    //   res.status(200).send({ url: stripeUrl });
+    //   //sendNotification(account, 'submit');
+
+    // }
   }
   catch (error) {
     console.error('purchaseGames::Error: ', error);
@@ -199,59 +228,7 @@ export async function purchaseGames (req: Request, res: Response)
 }
 
 
-//-----------------------------------------------
 
-
-
-export async function checkout (account: Account)
-{ 
-  try { 
-    
-    if (account)
-    {
-      const metadata = {
-        recipient: account.email ?? null,
-        email: account.email ?? null,
-        phone: account.phone ?? null
-      }
-
-      const price = 100; //one dollar placeholder
-
-      const stripeSession = await stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
-          mode: 'payment',
-          success_url: `${ process.env.WEB_URL }/checkout-success`, 
-          cancel_url: process.env.WEB_URL,
-          line_items: [
-            {
-              price_data: { 
-                currency: 'usd',
-                product_data: { name: 'loregraded' },
-                unit_amount: price,
-              },
-
-              //price: 'price_1N234567890',
-              quantity: 1
-            }
-          ],
-          metadata
-      });
-
-      console.log( 
-        'Checkout Success Link Generated: ', stripeSession.url, 
-        '\nTotal: ', price, 
-        '\nMetadata: ', JSON.stringify(account)
-      );
-        
-      return stripeSession.url;
-    }
-    else 
-      console.log('Please create an account before checking out.');
-  } 
-  catch (error) {
-    console.error('checkout::Error: ', error);
-  }
-}
 
 
 

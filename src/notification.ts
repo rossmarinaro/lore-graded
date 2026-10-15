@@ -2,12 +2,10 @@
 import nodemailer from 'nodemailer';
 import { EmailContextType, Account } from './types/types';
 import { Database } from './database';
-import { checkout } from './actions/main';
+import { checkout } from './stripe';
 
 
-//send confirmation email / SMS
-
-export async function sendNotification(account: Account, contextType: EmailContextType) 
+export async function sendNotification(account: Account, contextType: EmailContextType, stripeUrl = '') 
 {
     const isProd = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
 
@@ -40,13 +38,6 @@ export async function sendNotification(account: Account, contextType: EmailConte
             break;
             case 'purchase.offered':
             { 
-                const stripeUrl = await checkout(account);
-
-                if (!stripeUrl) {
-                    console.log('There was a problem issuing a stripe checkout link.');
-                    return;
-                }
-
                 subject = 'You Have Been Selected!';
                 html = `<img src="${ process.env.LOGO_IMG }" alt="Company Logo" width="200" height="100">
                     <b>
@@ -91,7 +82,7 @@ export async function sendNotification(account: Account, contextType: EmailConte
         /********************* SMS */ 
 
         // const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
+        const SMS = '';
         // const SMS = await twilioClient.messages.create({
         //     body: messageBody,
         //     from: process.env.TWILIO_PHONE_NUMBER, 
@@ -99,6 +90,8 @@ export async function sendNotification(account: Account, contextType: EmailConte
         // });
         
         // console.log('SMS sent:', SMS.sid);
+
+        return { email: email.to, phone: SMS };
     }
 
     catch(err) { 
@@ -129,5 +122,29 @@ export async function sendTargetedNotifications()
     
     //notify selected accounts to pay
 
-    selectedAccounts.forEach(i => sendNotification(i, 'purchase.offered'));
+    selectedAccounts.forEach(async account => {
+
+        //todo: loop over other orders
+        //const orders = account.orders?.map(order => )
+
+        if (!account.orders || !account.orders[0])
+            return;
+
+        const metadata = { 
+            user_id: account.orders[0].user_id,
+            order_id: account.orders[0].order_id,
+            time_stamp: account.orders[0].time_stamp,
+        };
+
+        const line_items = account.orders[0].line_items;
+
+        const stripeUrl = await checkout(metadata, line_items, process.env.WEB_URL as string);
+
+        if (!stripeUrl) {
+            console.log('There was a problem issuing a stripe checkout link.');
+            return;
+        }
+
+        sendNotification(account, 'purchase.offered', stripeUrl);
+    });
 }
