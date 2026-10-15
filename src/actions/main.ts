@@ -6,6 +6,7 @@ import { Order, Account, UserJwtPayload } from '../types/types'
 import { sendNotification } from '../notification'
 import { stripe } from '../stripe';
 import jwt from 'jsonwebtoken'
+import { getUserID } from '../utils';
 
 
 //----------------------------------------------------
@@ -93,15 +94,15 @@ export async function submitOrderToQueue (req: Request, res: Response)
 console.log('req.id: ',req.id);
   try {                  
     const order: Order = { user_id, order_id, time_stamp: queue_timestamp };
-    const projection = { email: 1, phone: 1 };
-    const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: req.id }, { order }, projection);
+    const projection = { email: 1, phone: 1 };  const id = req.id?.toString(); if (!id) return;
+    const account = await Database.findOneAndUpdate(process.env.MONGODB_COLLECTION as string, { _id: getUserID(id) }, { order }, projection);
 
-    if (account) {
+    if (account) { console.log('notification::')
       sendNotification(account, 'submit');
       res.status(200).send(`Order ${ order_id } added to the queue.`);
     }
     else 
-      res.status(302).send('Failed to associate account with order queue.');
+      {console.log('failed to associate order::');res.status(302).send('Failed to associate account with order queue.'); }
   }
   catch (error) {
     console.error('submitOrder::Error: ', error);
