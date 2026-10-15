@@ -125,7 +125,7 @@ export async function sendTargetedNotifications()
     selectedAccounts.forEach(async account => {
 
         //todo: loop over other orders
-        //const orders = account.orders?.map(order => )
+        //const orders = account.orders?.map(order => );   
 
         if (!account.orders || !account.orders[0])
             return;
