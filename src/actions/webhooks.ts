@@ -28,12 +28,14 @@ export async function checkoutPaymentHook (req: Request, res: Response)
 
         if (account)
         {
-           console.log(`user: ${ account.email } paid. Sending notification.`);
-            
-          //send confirmation email / SMS
+            //todo: notify processing center about the order.
 
-           const to = sendNotification(webhookSession, 'purchase.complete');
-           console.log('Successfully sent notifications to: ', to);
+            console.log(`user: ${ account.email } paid. Sending notification.`);
+            
+            //send confirmation email / SMS
+
+            const to = sendNotification(webhookSession, 'purchase.complete');
+            console.log('Successfully sent notifications to: ', to);
         }
       }
       break;

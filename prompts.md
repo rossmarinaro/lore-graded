@@ -243,6 +243,10 @@ When a user runs out of free games for a day, make a request to https://api.lore
 a webhook will trigger on the render backend to establish an event signaling a completed transaction. The available game rounds
 purchased by the user need to be sent to the frontend. Which endpoint does the renderbackend need to send this data representing purchased game rounds does this need to be requested to?
 
+When a user submits their cards to the render backend, the total cost of the submission items
+need to be available for checkout. Give me the database sql url being used to connect to so the render backend 
+can query the database, as well as an sql query to return the price data based on the order_id passed as an argument in the req.body
+in the POST request to '/api2/api/submit-order'
 
 
 

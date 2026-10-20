@@ -125,18 +125,25 @@ export async function sendTargetedNotifications()
     selectedAccounts.forEach(async account => {
 
         //todo: loop over other orders
-        //const orders = account.orders?.map(order => );   
+        //const orders = account.orders?.map(order => {});   
 
-        if (!account.orders || !account.orders[0])
+        if (!account.orders || !account.orders.length)
             return;
 
+        const lastOrder = account.orders.at(-1);
+
+        if (!lastOrder) {
+            console.log('No order found.');
+            return;
+        }
+
         const metadata = { 
-            user_id: account.orders[0].user_id,
-            order_id: account.orders[0].order_id,
-            time_stamp: account.orders[0].time_stamp,
+            user_id: lastOrder.user_id,
+            order_id: lastOrder.order_id,
+            time_stamp: lastOrder.time_stamp,
         };
 
-        const line_items = account.orders[0].line_items;
+        const line_items = lastOrder.line_items;
 
         const stripeUrl = await checkout(metadata, line_items, process.env.WEB_URL as string);
 

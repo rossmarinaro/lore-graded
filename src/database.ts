@@ -1,9 +1,15 @@
-import { MongoClient, WithId } from 'mongodb'
-import { Account, MongoDBOptions } from './types/types'
+import { MongoClient } from 'mongodb'
+import { MongoDBOptions } from './types/types'
+import pg from 'pg'
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
+
+export const sqlPool = new pg.Pool({
+    connectionString: process.env.EXTERNAL_SQL_DB_URL,
+    ssl: { rejectUnauthorized: false }
+});
 
 export class Database {
 
@@ -44,19 +50,19 @@ export class Database {
         }
     }
 
-    public static async findOne(collection: string, options: Account, projection = {}): Promise<WithId<Account> | null> {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).findOne(options, { projection });
+    public static async findOne(collection: string, options: {}, projection = {}) {
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).findOne(options, { projection });
         return user;
     }
 
-    public static async findAll(collection: string, limit = -1, options = {}): Promise<WithId<Account>[]> {
-        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).find(options).limit(limit).toArray();
+    public static async findAll(collection: string, limit = -1, options = {}) {
+        const cluster = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).find(options).limit(limit).toArray();
         return cluster;
     }
 
-    public static async findOneAndUpdate(collection: string, queryParams: Account, updateParams: Object, projection = {}, upsert = false): Promise<WithId<Account> | null> 
+    public static async findOneAndUpdate(collection: string, queryParams: Object, updateParams: Object, projection = {}, upsert = false)
     {
-        const user = await this.client.db(process.env.MONGODB_DATABASE).collection<Account>(collection).findOneAndUpdate(
+        const user = await this.client.db(process.env.MONGODB_DATABASE).collection(collection).findOneAndUpdate(
             queryParams, 
             { $set: updateParams },   
             { 

@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 import jwt from 'jsonwebtoken'
-import { Database } from '../database'
+import { Database, sqlPool } from '../database'
 import { Request, Response } from 'express'
 import { sendNotification } from '../notification'
 import { getUserID } from '../utils';
@@ -110,6 +110,18 @@ export async function submitOrderToQueue (req: Request, res: Response)
     console.log('Submitting order: ', order_id);
 
   try {    
+
+    //fetch the product
+
+    const sqlQuery = ''; //todo, ask for the actual sql product fields by its order_id
+    const queryValues = ['active'];
+    const sqlResult = await sqlPool.query(sqlQuery, queryValues);
+    const product = sqlResult.rows;
+
+    if (!product) {
+      console.log('Product not found.');
+      return;
+    }
     
     //submit order to queue, enter in database
 
@@ -122,10 +134,11 @@ export async function submitOrderToQueue (req: Request, res: Response)
             product_data: {
                 name: 'loregraded',
                 metadata: {
+                  
                   //todo: add mapped data for card submissions
                 }
             },
-            unit_amount: 100, //one dollar placeholder
+            unit_amount: /* product.price */ 100, //one dollar placeholder
         },
         quantity: 1
       }
