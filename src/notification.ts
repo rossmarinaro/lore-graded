@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import { EmailContextType, Account } from './types/types';
 import { Database } from './database';
 import { checkout } from './stripe';
+import { WithId } from 'mongodb';
 
 
 export async function sendNotification(account: Account, contextType: EmailContextType, stripeUrl = '') 
@@ -106,17 +107,20 @@ export async function sendNotification(account: Account, contextType: EmailConte
 
 export async function sendTargetedNotifications() 
 {
-    const accounts = await Database.findAll(process.env.MONGODB_COLLECTION as string, -1);
-    console.log(accounts);
+    const accounts: WithId<Account>[] = await Database.findAll(process.env.MONGODB_COLLECTION as string, -1);
 
     let totalOrders = 0;
     const totalAllowedOrders = 50;
     const selectedAccounts: Account[] = [];
 
     accounts.forEach(i => {
-        if ((i.orders && i.orders.length) && totalOrders + i.orders.length < totalAllowedOrders) {
+        if ((i.orders && i.orders.length) && totalOrders + i.orders.length < totalAllowedOrders) 
+        {
             selectedAccounts.push(i); 
-            totalOrders += i.orders.length;
+            const lastOrder = i.orders.at(-1);
+            
+            if (lastOrder)
+                totalOrders += lastOrder?.line_items.length;
         }
     });
     

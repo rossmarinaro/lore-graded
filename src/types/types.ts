@@ -35,4 +35,16 @@ export interface Account {
   orders?: Order[];
 };
 
+export interface StripeCardSubmission {
+  price_data: { 
+      currency: string;
+      product_data: {
+        name: string;
+        metadata: Object;
+      },
+      unit_amount: number | string;
+  },
+  quantity: number;
+}
+
 export type EmailContextType = 'submit' | 'purchase.complete' | 'purchase.offered';

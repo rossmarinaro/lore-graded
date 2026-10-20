@@ -5,6 +5,7 @@ import { Database, sqlPool } from '../database'
 import { Request, Response } from 'express'
 import { sendNotification } from '../notification'
 import { getUserID } from '../utils';
+import { StripeCardSubmission } from '../types/types';
 
 
 //----------------------------------------------------
@@ -116,9 +117,9 @@ export async function submitOrderToQueue (req: Request, res: Response)
     const sqlQuery = ''; //todo, ask for the actual sql product fields by its order_id
     const queryValues = ['active'];
     const sqlResult = await sqlPool.query(sqlQuery, queryValues);
-    const product = sqlResult.rows;
+    const products = sqlResult.rows;
 
-    if (!product) {
+    if (!products) {
       console.log('Product not found.');
       return;
     }
@@ -127,22 +128,24 @@ export async function submitOrderToQueue (req: Request, res: Response)
 
     //temp product data TODO: look up actual mapped prices to card submissions
 
-    const line_items = [
-      {
+    const line_items: StripeCardSubmission[] = [];
+
+    products.forEach(i => {
+      line_items.push({
         price_data: { 
-            currency: 'usd',
-            product_data: {
-                name: 'loregraded',
-                metadata: {
-                  
-                  //todo: add mapped data for card submissions
-                }
-            },
-            unit_amount: /* product.price */ 100, //one dollar placeholder
+          currency: i.currency,
+          product_data: {
+              name: i.id,
+              metadata: {
+                
+                //todo: add mapped data for card submissions
+              }
+          },
+          unit_amount: i.price //100, //one dollar placeholder
         },
         quantity: 1
-      }
-    ];
+      });
+    });
 
     const order = { user_id, order_id, line_items, time_stamp: queue_timestamp };
     const id = req.id?.toString(); 
